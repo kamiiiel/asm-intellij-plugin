@@ -18,8 +18,6 @@
 
 package org.objectweb.asm.idea.config;
 
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.EnumComboBoxModel;
 
@@ -43,28 +41,28 @@ public class ASMPluginConfiguration {
         return contentPane;
     }
 
-    public void setData(ASMPluginComponent data) {
-        skipDebugCheckBox.setSelected(data.isSkipDebug());
-        skipFramesCheckBox.setSelected(data.isSkipFrames());
-        skipCodeCheckBox.setSelected(data.isSkipCode());
-        expandFramesCheckBox.setSelected(data.isExpandFrames());
-        groovyCodeStyleComboBox.setSelectedItem(data.getCodeStyle());
+    public void setData(ApplicationConfig applicationConfig) {
+        skipDebugCheckBox.setSelected(applicationConfig.isSkipDebug());
+        skipFramesCheckBox.setSelected(applicationConfig.isSkipFrames());
+        skipCodeCheckBox.setSelected(applicationConfig.isSkipCode());
+        expandFramesCheckBox.setSelected(applicationConfig.isExpandFrames());
+        groovyCodeStyleComboBox.setSelectedItem(applicationConfig.getGroovyCodeStyle());
     }
 
-    public void getData(ASMPluginComponent data) {
-        data.setSkipDebug(skipDebugCheckBox.isSelected());
-        data.setSkipFrames(skipFramesCheckBox.isSelected());
-        data.setSkipCode(skipCodeCheckBox.isSelected());
-        data.setExpandFrames(expandFramesCheckBox.isSelected());
-        data.setCodeStyle((GroovyCodeStyle) groovyCodeStyleComboBox.getSelectedItem());
+    public void getData(ApplicationConfig applicationConfig) {
+        applicationConfig.setSkipDebug(skipDebugCheckBox.isSelected());
+        applicationConfig.setSkipFrames(skipFramesCheckBox.isSelected());
+        applicationConfig.setSkipCode(skipCodeCheckBox.isSelected());
+        applicationConfig.setExpandFrames(expandFramesCheckBox.isSelected());
+        applicationConfig.setGroovyCodeStyle((GroovyCodeStyle) groovyCodeStyleComboBox.getSelectedItem());
     }
 
-    public boolean isModified(ASMPluginComponent data) {
-        if (skipDebugCheckBox.isSelected() != data.isSkipDebug()) return true;
-        if (skipFramesCheckBox.isSelected() != data.isSkipFrames()) return true;
-        if (skipCodeCheckBox.isSelected() != data.isSkipCode()) return true;
-        if (expandFramesCheckBox.isSelected() != data.isExpandFrames()) return true;
-        if (!groovyCodeStyleComboBox.getSelectedItem().equals(data.getCodeStyle())) return true;
+    public boolean isModified(ApplicationConfig applicationConfig) {
+        if (skipDebugCheckBox.isSelected() != applicationConfig.isSkipDebug()) return true;
+        if (skipFramesCheckBox.isSelected() != applicationConfig.isSkipFrames()) return true;
+        if (skipCodeCheckBox.isSelected() != applicationConfig.isSkipCode()) return true;
+        if (expandFramesCheckBox.isSelected() != applicationConfig.isExpandFrames()) return true;
+        if (!groovyCodeStyleComboBox.getSelectedItem().equals(applicationConfig.getGroovyCodeStyle())) return true;
         return false;
     }
 

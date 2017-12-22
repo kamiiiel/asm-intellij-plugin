@@ -24,14 +24,13 @@ package org.objectweb.asm.idea;
  * Time: 22:07
  */
 
-import org.objectweb.asm.*;
-import reloc.org.objectweb.asm.*;
+import org.objectweb.asm.idea.config.GroovyCodeStyle;
 import reloc.org.objectweb.asm.Label;
 import reloc.org.objectweb.asm.Opcodes;
 import reloc.org.objectweb.asm.Type;
 import reloc.org.objectweb.asm.commons.Method;
-import org.objectweb.asm.idea.config.GroovyCodeStyle;
-import reloc.org.objectweb.asm.util.*;
+import reloc.org.objectweb.asm.util.Printer;
+import reloc.org.objectweb.asm.util.Textifier;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,7 +68,7 @@ public class GroovifiedTextifier extends Textifier {
     private final GroovyCodeStyle codeStyle;
 
     public GroovifiedTextifier(final GroovyCodeStyle codeStyle) {
-        super( Opcodes.ASM5 );
+        super(Opcodes.ASM5);
         this.codeStyle = codeStyle;
     }
 
@@ -175,7 +174,7 @@ public class GroovifiedTextifier extends Textifier {
     protected static class GroovifiedMethodTextifier extends Textifier {
 
         private final GroovyCodeStyle codeStyle;
-        private static final Textifier EMPTY_TEXTIFIER = new Textifier( Opcodes.ASM5 ) {
+        private static final Textifier EMPTY_TEXTIFIER = new Textifier(Opcodes.ASM5) {
             @Override
             public List<Object> getText() {
                 return Collections.emptyList();
@@ -183,7 +182,7 @@ public class GroovifiedTextifier extends Textifier {
         };
 
         public GroovifiedMethodTextifier(final GroovyCodeStyle codeStyle) {
-            super( Opcodes.ASM5 );
+            super(Opcodes.ASM5);
             this.codeStyle = codeStyle;
         }
 
@@ -265,7 +264,7 @@ public class GroovifiedTextifier extends Textifier {
                 buf.append('.');
                 buf.append(name);
                 buf.append(" >> ");
-                buf.append(groovyClassName(Type.getReturnType(desc).getClassName()));
+                buf.append(groovyClassName(Type.getType(desc).getClassName()));
             }
             buf.append('\n');
             text.add(buf.toString());
@@ -299,7 +298,7 @@ public class GroovifiedTextifier extends Textifier {
                     if (i < types.length - 1) buf.append(',');
                 }
                 buf.append(") >> ");
-                buf.append(groovyClassName(Type.getReturnType(desc).getClassName()));
+                buf.append(groovyClassName(Type.getType(desc).getClassName()));
             }
             buf.append('\n');
             text.add(buf.toString());
@@ -339,7 +338,7 @@ public class GroovifiedTextifier extends Textifier {
          */
         protected void appendLabel(final Label l) {
             if (labelNames == null) {
-                labelNames = new HashMap<reloc.org.objectweb.asm.Label, String>();
+                labelNames = new HashMap<Label, String>();
             }
             String name = (String) labelNames.get(l);
             if (name == null) {

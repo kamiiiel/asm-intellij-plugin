@@ -23,9 +23,6 @@ import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
 
-import javax.swing.*;
-import java.awt.*;
-
 
 /**
  * Created by IntelliJ IDEA.
