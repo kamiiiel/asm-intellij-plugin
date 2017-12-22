@@ -15,32 +15,20 @@
  *  limitations under the License.
  * /
  */
-
-package org.objectweb.asm.idea;
-
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.keymap.KeymapManager;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindowManager;
-
+package org.objectweb.asm.idea.common;
 
 /**
  * Created by IntelliJ IDEA.
  * User: cedric
- * Date: 07/01/11
- * Time: 17:07
+ * Date: 18/01/11
+ * Time: 06:58
  */
 
 /**
- * ASMified code view.
+ * Constants used in various places of the code.
  */
-public class BytecodeASMified extends ACodeView {
-
-	public BytecodeASMified(final ToolWindowManager toolWindowManager, KeymapManager keymapManager, final Project project) {
-		super(toolWindowManager, keymapManager, project);
-	}
-
-	public static BytecodeASMified getInstance(Project project) {
-		return ServiceManager.getService(project, BytecodeASMified.class);
-	}
+public abstract class Constants {
+    public final static String PLUGIN_WINDOW_NAME = "ASM";
+    public final static String FILE_NAME = "asm";
+    public final static String NO_CLASS_FOUND = "// couldn't generate bytecode view, no .class file found";
 }

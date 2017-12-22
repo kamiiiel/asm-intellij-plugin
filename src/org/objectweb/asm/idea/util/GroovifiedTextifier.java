@@ -16,7 +16,7 @@
  * /
  */
 
-package org.objectweb.asm.idea;
+package org.objectweb.asm.idea.util;
 /**
  * Created by IntelliJ IDEA.
  * User: cedric

@@ -16,31 +16,25 @@
  * /
  */
 
-package org.objectweb.asm.idea;
+package org.objectweb.asm.idea.view;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
+import org.objectweb.asm.idea.common.FileTypeExtension;
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: cedric
- * Date: 07/01/11
- * Time: 17:07
+ * ASMified code view.
  */
+public class BytecodeASMified extends ACodeView {
 
-/**
- * The groovified view displays @groovyx.ast.bytecode.Bytecode code for methods.
- */
-public class GroovifiedView extends ACodeView {
-
-	public GroovifiedView(final Project project, KeymapManager keymapManager, final ToolWindowManager toolWindowManager) {
-		super(toolWindowManager, keymapManager, project, "groovy");
+	public BytecodeASMified(final ToolWindowManager toolWindowManager, KeymapManager keymapManager, final Project project) {
+		super(toolWindowManager, keymapManager, project, FileTypeExtension.JAVA.getValue());
 	}
 
-	public static GroovifiedView getInstance(Project project) {
-		return ServiceManager.getService(project, GroovifiedView.class);
+	public static BytecodeASMified getInstance(Project project) {
+		return ServiceManager.getService(project, BytecodeASMified.class);
 	}
 }

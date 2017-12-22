@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright 2011 Cédric Champeau
+ *  Copyright 2017 Kamiel Ahmadpour
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,18 +15,23 @@
  *  limitations under the License.
  * /
  */
-package org.objectweb.asm.idea;
+
+package org.objectweb.asm.idea.common;
 
 /**
- * Created by IntelliJ IDEA.
- * User: cedric
- * Date: 18/01/11
- * Time: 06:58
+ * @author Kamiel Ahmadpour - 2017
  */
+public enum FileTypeExtension {
+    JAVA("java"),
+    GROOVY("groovy");
 
-/**
- * Constants used in various places of the code.
- */
-public abstract class Constants {
-    final static String NO_CLASS_FOUND = "// couldn't generate bytecode view, no .class file found";
+    FileTypeExtension(String value) {
+        this.value = value;
+    }
+
+    private String value;
+
+    public String getValue() {
+        return value;
+    }
 }

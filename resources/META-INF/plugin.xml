@@ -62,7 +62,7 @@
     </project-components>
 
     <actions>
-        <action id="showBytecodeOutline" class="org.objectweb.asm.idea.ShowBytecodeOutlineAction" text="Show Bytecode outline"
+        <action id="showBytecodeOutline" class="org.objectweb.asm.idea.action.ShowBytecodeOutlineAction" text="Show Bytecode outline"
                 description="Shows the bytecode outline and ASMified code from the current class">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
@@ -72,9 +72,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable groupId="tools" instance="org.objectweb.asm.idea.config.PluginConfig" />
-        <toolWindow id="ASM" anchor="right" icon="/images/asm.gif" factoryClass="org.objectweb.asm.idea.BytecodeOutlineToolWindowFactory"/>
-        <projectService serviceInterface="org.objectweb.asm.idea.BytecodeOutline" serviceImplementation="org.objectweb.asm.idea.BytecodeOutline"/>
-        <projectService serviceInterface="org.objectweb.asm.idea.BytecodeASMified" serviceImplementation="org.objectweb.asm.idea.BytecodeASMified"/>
-        <projectService serviceInterface="org.objectweb.asm.idea.GroovifiedView" serviceImplementation="org.objectweb.asm.idea.GroovifiedView"/>
+        <toolWindow id="ASM" anchor="right" icon="/images/asm.gif" factoryClass="org.objectweb.asm.idea.view.BytecodeOutlineToolWindowFactory"/>
+        <projectService serviceInterface="org.objectweb.asm.idea.view.BytecodeOutline" serviceImplementation="org.objectweb.asm.idea.view.BytecodeOutline"/>
+        <projectService serviceInterface="org.objectweb.asm.idea.view.BytecodeASMified" serviceImplementation="org.objectweb.asm.idea.view.BytecodeASMified"/>
+        <projectService serviceInterface="org.objectweb.asm.idea.view.GroovifiedView" serviceImplementation="org.objectweb.asm.idea.view.GroovifiedView"/>
     </extensions>
 </idea-plugin>

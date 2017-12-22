@@ -16,7 +16,7 @@
  * /
  */
 
-package org.objectweb.asm.idea;
+package org.objectweb.asm.idea.action;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -32,6 +32,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.impl.text.PsiAwareTextEditorImpl;
+import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
@@ -41,10 +42,15 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import org.objectweb.asm.idea.common.Constants;
+import org.objectweb.asm.idea.common.FileTypeExtension;
 import org.objectweb.asm.idea.config.ASMPluginComponent;
 import org.objectweb.asm.idea.config.ApplicationConfig;
+import org.objectweb.asm.idea.util.GroovifiedTextifier;
+import org.objectweb.asm.idea.view.BytecodeASMified;
+import org.objectweb.asm.idea.view.BytecodeOutline;
+import org.objectweb.asm.idea.view.GroovifiedView;
 import reloc.org.objectweb.asm.ClassReader;
-import reloc.org.objectweb.asm.ClassVisitor;
 import reloc.org.objectweb.asm.util.ASMifier;
 import reloc.org.objectweb.asm.util.TraceClassVisitor;
 
@@ -76,6 +82,7 @@ public class ShowBytecodeOutlineAction extends AnAction {
         presentation.setEnabled(psiFile instanceof PsiClassOwner);
     }
 
+    @Override
     public void actionPerformed(AnActionEvent e) {
         final VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
         final Project project = e.getData(PlatformDataKeys.PROJECT);
@@ -214,15 +221,20 @@ public class ShowBytecodeOutlineAction extends AnAction {
     private void updateToolWindowContents(final Project project, final VirtualFile file) {
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             public void run() {
+                BytecodeOutline bytecodeOutline = BytecodeOutline.getInstance(project);
+                BytecodeASMified bytecodeASMified = BytecodeASMified.getInstance(project);
+                GroovifiedView groovifiedView = GroovifiedView.getInstance(project);
+                ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
+
                 if (file == null) {
-                    BytecodeOutline.getInstance(project).setCode(file, Constants.NO_CLASS_FOUND);
-                    BytecodeASMified.getInstance(project).setCode(file, Constants.NO_CLASS_FOUND);
-                    GroovifiedView.getInstance(project).setCode(file, Constants.NO_CLASS_FOUND);
-                    ToolWindowManager.getInstance(project).getToolWindow("ASM").activate(null);
+                    bytecodeOutline.setCode(file, Constants.NO_CLASS_FOUND);
+                    bytecodeASMified.setCode(file, Constants.NO_CLASS_FOUND);
+                    groovifiedView.setCode(file, Constants.NO_CLASS_FOUND);
+                    toolWindowManager.getToolWindow(Constants.PLUGIN_WINDOW_NAME).activate(null);
                     return;
                 }
+
                 StringWriter stringWriter = new StringWriter();
-                ClassVisitor visitor = new TraceClassVisitor(new PrintWriter(stringWriter));
                 ClassReader reader = null;
                 try {
                     file.refresh(false, false);
@@ -238,20 +250,20 @@ public class ShowBytecodeOutlineAction extends AnAction {
                 if (applicationConfig.isExpandFrames()) flags = flags | ClassReader.EXPAND_FRAMES;
                 if (applicationConfig.isSkipCode()) flags = flags | ClassReader.SKIP_CODE;
 
-                reader.accept(visitor, flags);
-                BytecodeOutline.getInstance(project).setCode(file, stringWriter.toString());
+                reader.accept(new TraceClassVisitor(new PrintWriter(stringWriter)), flags);
+                bytecodeOutline.setCode(file, stringWriter.toString());
+
                 stringWriter.getBuffer().setLength(0);
                 reader.accept(new TraceClassVisitor(null, new GroovifiedTextifier(applicationConfig.getGroovyCodeStyle()), new PrintWriter(stringWriter)), ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
-                GroovifiedView.getInstance(project).setCode(file, stringWriter.toString());
+                groovifiedView.setCode(file, stringWriter.toString());
+
                 stringWriter.getBuffer().setLength(0);
-                reader.accept(new TraceClassVisitor(null,
-                        new ASMifier(),
-                        new PrintWriter(stringWriter)), flags);
-                final BytecodeASMified asmified = BytecodeASMified.getInstance(project);
-                PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("asm.java", stringWriter.toString());
+                reader.accept(new TraceClassVisitor(null, new ASMifier(), new PrintWriter(stringWriter)), flags);
+                PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText(Constants.FILE_NAME, FileTypeManager.getInstance().getFileTypeByExtension(FileTypeExtension.JAVA.getValue()), stringWriter.toString());
                 CodeStyleManager.getInstance(project).reformat(psiFile);
-                asmified.setCode(file, psiFile.getText());
-                ToolWindowManager.getInstance(project).getToolWindow("ASM").activate(null);
+                bytecodeASMified.setCode(file, psiFile.getText());
+
+                toolWindowManager.getToolWindow(Constants.PLUGIN_WINDOW_NAME).activate(null);
             }
         });
     }
