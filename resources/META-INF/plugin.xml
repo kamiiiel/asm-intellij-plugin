@@ -1,11 +1,16 @@
 <idea-plugin version="2">
-	<name>ASM Bytecode Outline</name>
-	<description>Displays bytecode for Java classes and ASMified code which will help you in your class generation.</description>
-	<version>0.3.5</version>
-	<vendor>Cédric Champeau</vendor>
-	<idea-version since-build="103.14"/>
+    <name>ASM Bytecode Outline</name>
+    <description>Displays bytecode for Java classes and ASMified code which will help you in your class generation.</description>
+    <version>0.6.0</version>
+    <vendor>Cédric Champeau</vendor>
+    <idea-version since-build="103.14"/>
 
     <change-notes><![CDATA[
+        <b>Version 0.6.0</b>
+        <ul>
+            <li>Add support for the new versions of Intellij</li>
+            <li>Upgraded ASM to 6.0</li>
+        </ul>
         <b>Version 0.3.5</b>
         <ul>
             <li>Fixed ASM lib classes version</li>
@@ -46,34 +51,30 @@
         </ul>
     ]]></change-notes>
 
-	<application-components>
+    <application-components>
 
-	</application-components>
+    </application-components>
 
-	<project-components>
+    <project-components>
         <component>
             <implementation-class>org.objectweb.asm.idea.config.ASMPluginComponent</implementation-class>
         </component>
     </project-components>
 
-	<actions>
-		<action id="showBytecodeOutline" class="org.objectweb.asm.idea.ShowBytecodeOutlineAction"
-				text="Show Bytecode outline"
-				description="Shows the bytecode outline and ASMified code from the current class">
-			<add-to-group group-id="EditorPopupMenu" anchor="last"/>
-			<add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+    <actions>
+        <action id="showBytecodeOutline" class="org.objectweb.asm.idea.ShowBytecodeOutlineAction" text="Show Bytecode outline"
+                description="Shows the bytecode outline and ASMified code from the current class">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
             <add-to-group group-id="CodeMenu" anchor="last"/>
-		</action>
-	</actions>
+        </action>
+    </actions>
 
-	<extensions defaultExtensionNs="com.intellij">
-		<toolWindow id="ASM" anchor="right" icon="/images/asm.gif"
-					factoryClass="org.objectweb.asm.idea.BytecodeOutlineToolWindowFactory"/>
-		<projectService serviceInterface="org.objectweb.asm.idea.BytecodeOutline"
-						serviceImplementation="org.objectweb.asm.idea.BytecodeOutline"/>
-		<projectService serviceInterface="org.objectweb.asm.idea.BytecodeASMified"
-						serviceImplementation="org.objectweb.asm.idea.BytecodeASMified"/>
-        <projectService serviceInterface="org.objectweb.asm.idea.GroovifiedView"
-                        serviceImplementation="org.objectweb.asm.idea.GroovifiedView"/>
-	</extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable groupId="tools" instance="org.objectweb.asm.idea.config.PluginConfig" />
+        <toolWindow id="ASM" anchor="right" icon="/images/asm.gif" factoryClass="org.objectweb.asm.idea.BytecodeOutlineToolWindowFactory"/>
+        <projectService serviceInterface="org.objectweb.asm.idea.BytecodeOutline" serviceImplementation="org.objectweb.asm.idea.BytecodeOutline"/>
+        <projectService serviceInterface="org.objectweb.asm.idea.BytecodeASMified" serviceImplementation="org.objectweb.asm.idea.BytecodeASMified"/>
+        <projectService serviceInterface="org.objectweb.asm.idea.GroovifiedView" serviceImplementation="org.objectweb.asm.idea.GroovifiedView"/>
+    </extensions>
 </idea-plugin>
