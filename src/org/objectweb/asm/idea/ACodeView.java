@@ -24,12 +24,12 @@ package org.objectweb.asm.idea;
  * Time: 22:18
  */
 
+import com.intellij.diff.DiffContentFactory;
+import com.intellij.diff.DiffManager;
+import com.intellij.diff.contents.DocumentContent;
+import com.intellij.diff.requests.SimpleDiffRequest;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.diff.DiffContent;
-import com.intellij.openapi.diff.DiffManager;
-import com.intellij.openapi.diff.DiffRequest;
-import com.intellij.openapi.diff.SimpleContent;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
@@ -162,29 +162,11 @@ public class ACodeView extends SimpleToolWindowPanel implements Disposable {
 
         @Override
         public void actionPerformed(final AnActionEvent e) {
-            DiffManager.getInstance().getDiffTool().show(new DiffRequest(project) {
-                @Override
-                public DiffContent[] getContents() {
-                    // there must be a simpler way to obtain the file type
-                    PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("asm." + extension, "");
-                    final DiffContent currentContent = previousFile == null ? new SimpleContent("") : new SimpleContent(document.getText(), psiFile.getFileType());
-                    final DiffContent oldContent = new SimpleContent(previousCode == null ? "" : previousCode, psiFile.getFileType());
-                    return new DiffContent[]{
-                            oldContent,
-                            currentContent
-                    };
-                }
-
-                @Override
-                public String[] getContentTitles() {
-                    return DIFF_TITLES;
-                }
-
-                @Override
-                public String getWindowTitle() {
-                    return DIFF_WINDOW_TITLE;
-                }
-            });
+            PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText("asm." + extension, FileTypeManager.getInstance().getFileTypeByExtension(extension), "");
+            DocumentContent currentContent = (previousFile == null) ? DiffContentFactory.getInstance().create("") : DiffContentFactory.getInstance().create(document.getText(), psiFile.getFileType());
+            DocumentContent oldContent = (previousCode == null) ? DiffContentFactory.getInstance().create("") : DiffContentFactory.getInstance().create(previousCode, psiFile.getFileType());
+            SimpleDiffRequest request = new SimpleDiffRequest("ASM Diff", currentContent, oldContent, "Previous Version", "Current Version");
+            DiffManager.getInstance().showDiff(project, request);
         }
     }
 }
