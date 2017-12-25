@@ -3,13 +3,13 @@
     <description>Displays bytecode for Java classes and ASMified code which will help you in your class generation.</description>
     <version>0.6.0</version>
     <vendor>Cédric Champeau</vendor>
-    <idea-version since-build="103.14"/>
+    <idea-version since-build="139.1803"/>
 
     <change-notes><![CDATA[
         <b>Version 0.6.0</b>
         <ul>
             <li>Add support for the new versions of Intellij</li>
-            <li>Upgraded ASM to 6.0</li>
+            <li>Upgraded ASM to 6.0 and fix some bugs</li>
         </ul>
         <b>Version 0.3.5</b>
         <ul>
