@@ -42,6 +42,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.objectweb.asm.idea.common.Constants;
 import org.objectweb.asm.idea.common.FileTypeExtension;
 import org.objectweb.asm.idea.config.ASMPluginComponent;
@@ -161,10 +162,12 @@ public class ShowBytecodeOutlineAction extends AnAction {
 
     private VirtualFile findClassFile(final VirtualFile[] outputDirectories, final PsiFile psiFile) {
         return ApplicationManager.getApplication().runReadAction(new Computable<VirtualFile>() {
+
+            @Override
             public VirtualFile compute() {
                 if (outputDirectories != null && psiFile instanceof PsiClassOwner) {
                     FileEditor editor = FileEditorManager.getInstance(psiFile.getProject()).getSelectedEditor(psiFile.getVirtualFile());
-                    int caretOffset = editor == null ? -1 : ((PsiAwareTextEditorImpl) editor).getEditor().getCaretModel().getOffset();
+                    int caretOffset = (editor == null) ? -1 : ((PsiAwareTextEditorImpl) editor).getEditor().getCaretModel().getOffset();
                     if (caretOffset >= 0) {
                         PsiClass psiClass = findClassAtCaret(psiFile, caretOffset);
                         if (psiClass != null) {
@@ -199,12 +202,12 @@ public class ShowBytecodeOutlineAction extends AnAction {
             }
 
             private PsiClass findClassAtCaret(PsiFile psiFile, int caretOffset) {
-                PsiElement elem = psiFile.findElementAt(caretOffset);
-                while (elem != null) {
-                    if (elem instanceof PsiClass) {
-                        return (PsiClass) elem;
+                PsiElement psiElement = psiFile.findElementAt(caretOffset);
+                while (psiElement != null) {
+                    if (psiElement instanceof PsiClass) {
+                        return PsiTreeUtil.getParentOfType(psiElement, PsiClass.class);
                     }
-                    elem = elem.getParent();
+                    psiElement = psiElement.getParent();
                 }
                 return null;
             }
