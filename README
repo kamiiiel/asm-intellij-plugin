@@ -5,8 +5,8 @@ http://asm.ow2.org/
 
 
 You can use the plugin in 3 different ways:
-1) Right click somewhere inside the code editor and choose "Show Bytecode outline"
-2) In the "Code" menu, choose "Show Bytecode outline"
-3) Right click on the java file in the Project window and choose "Show Bytecode outline"
+1) Right click somewhere inside the code editor and choose "ASM Bytecode Viewer"
+2) In the "Code" menu, choose "ASM Bytecode Viewer"
+3) Right click on the java file in the Project window and choose "ASM Bytecode Viewer"
 
-You can find the setting inside Settings => Tools => "Show Bytecode Outline"
+You can find the setting inside Settings => Tools => "ASM Bytecode Viewer"

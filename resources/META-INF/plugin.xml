@@ -1,8 +1,8 @@
 <idea-plugin version="2">
-    <name>ASM Bytecode Outline</name>
+    <name>ASM Bytecode Viewer</name>
     <description>Displays bytecode for Java classes and ASMified code which will help you in your class generation.</description>
     <version>0.6.0</version>
-    <vendor>Cédric Champeau</vendor>
+    <vendor>Kamiel Ahmadpour</vendor>
     <idea-version since-build="139.1803"/>
 
     <change-notes><![CDATA[
@@ -62,7 +62,7 @@
     </project-components>
 
     <actions>
-        <action id="showBytecodeOutline" class="org.objectweb.asm.idea.action.ShowBytecodeOutlineAction" text="Show Bytecode outline"
+        <action id="showBytecodeOutline" class="org.objectweb.asm.idea.action.ShowBytecodeOutlineAction" text="ASM Bytecode Viewer"
                 description="Shows the bytecode outline and ASMified code from the current class">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>

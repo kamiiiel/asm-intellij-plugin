@@ -23,7 +23,7 @@ package org.objectweb.asm.idea.config;
  * @author Kamiel Ahmadpour - 2017
  */
 public class ApplicationConfig {
-    public static final String APPLICATION_NAME = "ASM Bytecode Outline";
+    public static final String APPLICATION_NAME = "ASM Bytecode Viewer";
     private boolean skipFrames = false;
     private boolean skipDebug = false;
     private boolean skipCode = false;
