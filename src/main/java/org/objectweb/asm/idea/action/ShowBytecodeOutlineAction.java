@@ -18,6 +18,7 @@
 
 package org.objectweb.asm.idea.action;
 
+import com.intellij.ide.util.JavaAnonymousClassesHelper;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -67,6 +68,7 @@ import java.util.concurrent.Semaphore;
  * instructions for the class and ASMified code, and displays them into a tool window.
  *
  * @author Cédric Champeau
+ * @author Kamiel Ahmadpour
  */
 public class ShowBytecodeOutlineAction extends AnAction {
 
@@ -169,9 +171,10 @@ public class ShowBytecodeOutlineAction extends AnAction {
                     FileEditor editor = FileEditorManager.getInstance(psiFile.getProject()).getSelectedEditor(psiFile.getVirtualFile());
                     int caretOffset = (editor == null) ? -1 : ((PsiAwareTextEditorImpl) editor).getEditor().getCaretModel().getOffset();
                     if (caretOffset >= 0) {
-                        PsiClass psiClass = findClassAtCaret(psiFile, caretOffset);
-                        if (psiClass != null) {
-                            return getClassFile(psiClass);
+                        PsiElement psiElement = psiFile.findElementAt(caretOffset);
+                        PsiClass classAtCaret = findClassAtCaret(psiElement);
+                        if (classAtCaret != null) {
+                            return getClassFile(classAtCaret);
                         }
                     }
                     PsiClassOwner psiJavaFile = (PsiClassOwner) psiFile;
@@ -186,7 +189,18 @@ public class ShowBytecodeOutlineAction extends AnAction {
             }
 
             private VirtualFile getClassFile(PsiClass psiClass) {
-                StringBuilder sb = new StringBuilder(psiClass.getQualifiedName());
+                String className = psiClass.getQualifiedName();
+                if (className == null) {
+                    if (psiClass instanceof PsiAnonymousClass) {
+                        PsiClass parentClass = PsiTreeUtil.getParentOfType(psiClass, PsiClass.class);
+                        if (parentClass != null) {
+                            className = parentClass.getQualifiedName() + JavaAnonymousClassesHelper.getName((PsiAnonymousClass) psiClass);
+                        }
+                    } else if (psiClass instanceof PsiClass) {
+                        className = PsiTreeUtil.getParentOfType(psiClass, PsiClass.class).getQualifiedName();
+                    }
+                }
+                StringBuilder sb = new StringBuilder(className);
                 while (psiClass.getContainingClass() != null) {
                     sb.setCharAt(sb.lastIndexOf("."), '$');
                     psiClass = psiClass.getContainingClass();
@@ -201,13 +215,13 @@ public class ShowBytecodeOutlineAction extends AnAction {
                 return null;
             }
 
-            private PsiClass findClassAtCaret(PsiFile psiFile, int caretOffset) {
-                PsiElement psiElement = psiFile.findElementAt(caretOffset);
+            private PsiClass findClassAtCaret(PsiElement psiElement) {
                 while (psiElement != null) {
                     if (psiElement instanceof PsiClass) {
-                        return PsiTreeUtil.getParentOfType(psiElement, PsiClass.class);
+                        return (PsiClass) psiElement;
                     }
                     psiElement = psiElement.getParent();
+                    findClassAtCaret(psiElement);
                 }
                 return null;
             }

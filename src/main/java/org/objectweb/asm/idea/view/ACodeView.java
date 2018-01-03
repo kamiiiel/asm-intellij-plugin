@@ -26,6 +26,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.EditorFactory;
+import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.project.Project;
@@ -90,9 +91,11 @@ public class ACodeView extends SimpleToolWindowPanel implements Disposable {
         }
         showDiffAction.getDocument().setText(code);
         if (file != null) showDiffAction.setPreviousFile(file);
+        editor.getScrollingModel().scrollTo(editor.offsetToLogicalPosition(0), ScrollType.MAKE_VISIBLE);
     }
 
 
+    @Override
     public void dispose() {
         if (editor != null) {
             final EditorFactory editorFactory = EditorFactory.getInstance();

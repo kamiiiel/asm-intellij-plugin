@@ -31,4 +31,5 @@ public abstract class Constants {
     public final static String PLUGIN_WINDOW_NAME = "ASM";
     public final static String FILE_NAME = "asm";
     public final static String NO_CLASS_FOUND = "// couldn't generate bytecode view, no .class file found";
+    public final static String COMPONENT_NAME = "ASMPluginConfiguration";
 }

@@ -26,7 +26,6 @@ import java.awt.*;
 import java.util.EnumMap;
 
 public class ASMPluginConfiguration {
-    protected static final String COMPONENT_NAME = "ASMPluginConfiguration";
     private JPanel contentPane;
     private JCheckBox skipDebugCheckBox;
     private JCheckBox skipFramesCheckBox;

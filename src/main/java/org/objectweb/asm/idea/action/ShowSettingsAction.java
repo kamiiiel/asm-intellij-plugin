@@ -24,9 +24,6 @@ import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.util.IconLoader;
 import org.objectweb.asm.idea.config.PluginConfig;
 
-/**
- * @author Kamiel Ahmadpour - 2017
- */
 public class ShowSettingsAction extends AnAction {
 
     public ShowSettingsAction() {
@@ -40,6 +37,6 @@ public class ShowSettingsAction extends AnAction {
 
     @Override
     public void actionPerformed(final AnActionEvent e) {
-        ShowSettingsUtil.getInstance().showSettingsDialog(e.getProject(), e.getProject().getComponent(PluginConfig.class));
+        ShowSettingsUtil.getInstance().showSettingsDialog(e.getProject(), PluginConfig.class);
     }
 }

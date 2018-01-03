@@ -32,9 +32,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
 import org.objectweb.asm.idea.common.Constants;
 
-/**
- * @author Kamiel Ahmadpour - 2017
- */
 public class ShowDiffAction extends AnAction {
     private static final String DIFF_WINDOW_TITLE = "Show differences from previous class contents";
     private static final String[] DIFF_TITLES = {"Previous version", "Current version"};

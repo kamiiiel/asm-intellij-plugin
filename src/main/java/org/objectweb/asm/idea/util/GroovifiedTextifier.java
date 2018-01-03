@@ -39,6 +39,8 @@ import java.util.List;
 /**
  * A customized trace visitor which outputs code compatible with the Groovy @groovyx.ast.bytecode.Bytecode AST
  * transform.
+ *
+ * @author Cédric Champeau
  */
 public class GroovifiedTextifier extends Textifier {
 
@@ -264,7 +266,7 @@ public class GroovifiedTextifier extends Textifier {
                 buf.append('.');
                 buf.append(name);
                 buf.append(" >> ");
-                buf.append(groovyClassName(Type.getType(desc).getClassName()));
+                buf.append(groovyClassName(Type.getObjectType(desc).getClassName()));
             }
             buf.append('\n');
             text.add(buf.toString());

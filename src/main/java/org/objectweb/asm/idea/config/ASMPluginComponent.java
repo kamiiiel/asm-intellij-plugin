@@ -28,12 +28,13 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import org.jdom.Element;
+import org.objectweb.asm.idea.common.Constants;
 
 /**
  * A component created just to be able to configure the plugin.
  */
 @State(
-        name = ASMPluginConfiguration.COMPONENT_NAME,
+        name = Constants.COMPONENT_NAME,
         storages = {
                 @Storage(id = "ASMPlugin", file = "$PROJECT_FILE$")
         }
