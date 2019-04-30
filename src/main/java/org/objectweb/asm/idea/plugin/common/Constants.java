@@ -29,8 +29,12 @@ package org.objectweb.asm.idea.plugin.common;
  * Constants used in various places of the code.
  */
 public abstract class Constants {
-    public final static String PLUGIN_WINDOW_NAME = "ASMPlugin";
-    public final static String FILE_NAME = "asm-plugin";
-    public final static String NO_CLASS_FOUND = "// couldn't generate bytecode view, no .class file found";
-    public final static String COMPONENT_NAME = "ASMIdeaPluginConfiguration";
+    public static final String PLUGIN_WINDOW_NAME = "ASMPlugin";
+    public static final String FILE_NAME = "asm-plugin";
+    public static final String NO_CLASS_FOUND = "// couldn't generate bytecode view, no .class file found";
+    public static final String COMPONENT_NAME = "ASMIdeaPluginConfiguration";
+
+    private Constants() {
+
+    }
 }
