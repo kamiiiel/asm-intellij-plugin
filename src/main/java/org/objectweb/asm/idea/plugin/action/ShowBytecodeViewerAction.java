@@ -16,7 +16,7 @@
  * /
  */
 
-package org.objectweb.asm.idea.action;
+package org.objectweb.asm.idea.plugin.action;
 
 import com.intellij.ide.util.JavaAnonymousClassesHelper;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -42,14 +42,14 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.objectweb.asm.idea.common.Constants;
-import org.objectweb.asm.idea.common.FileTypeExtension;
-import org.objectweb.asm.idea.config.ASMPluginComponent;
-import org.objectweb.asm.idea.config.ApplicationConfig;
-import org.objectweb.asm.idea.util.GroovifiedTextifier;
-import org.objectweb.asm.idea.view.BytecodeASMified;
-import org.objectweb.asm.idea.view.BytecodeOutline;
-import org.objectweb.asm.idea.view.GroovifiedView;
+import org.objectweb.asm.idea.plugin.common.Constants;
+import org.objectweb.asm.idea.plugin.common.FileTypeExtension;
+import org.objectweb.asm.idea.plugin.config.ASMPluginComponent;
+import org.objectweb.asm.idea.plugin.config.ApplicationConfig;
+import org.objectweb.asm.idea.plugin.util.GroovifiedTextifier;
+import org.objectweb.asm.idea.plugin.view.BytecodeASMified;
+import org.objectweb.asm.idea.plugin.view.BytecodeOutline;
+import org.objectweb.asm.idea.plugin.view.GroovifiedView;
 import reloc.org.objectweb.asm.ClassReader;
 import reloc.org.objectweb.asm.util.ASMifier;
 import reloc.org.objectweb.asm.util.TraceClassVisitor;
@@ -68,7 +68,7 @@ import java.util.concurrent.Semaphore;
  * @author Cédric Champeau
  * @author Kamiel Ahmadpour
  */
-public class ShowBytecodeOutlineAction extends AnAction {
+public class ShowBytecodeViewerAction extends AnAction {
 
     @Override
     public void update(final AnActionEvent e) {

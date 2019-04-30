@@ -16,7 +16,7 @@
  * /
  */
 
-package org.objectweb.asm.idea.common;
+package org.objectweb.asm.idea.plugin.common;
 
 /**
  * @author Kamiel Ahmadpour - 2017

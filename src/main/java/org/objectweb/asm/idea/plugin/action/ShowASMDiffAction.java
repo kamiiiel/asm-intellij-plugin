@@ -16,7 +16,7 @@
  * /
  */
 
-package org.objectweb.asm.idea.action;
+package org.objectweb.asm.idea.plugin.action;
 
 import com.intellij.diff.DiffContentFactory;
 import com.intellij.diff.DiffManager;
@@ -30,9 +30,9 @@ import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
-import org.objectweb.asm.idea.common.Constants;
+import org.objectweb.asm.idea.plugin.common.Constants;
 
-public class ShowDiffAction extends AnAction {
+public class ShowASMDiffAction extends AnAction {
     private static final String DIFF_WINDOW_TITLE = "Show differences from previous class contents";
     private static final String[] DIFF_TITLES = {"Previous version", "Current version"};
     private String previousCode;
@@ -41,7 +41,7 @@ public class ShowDiffAction extends AnAction {
     private String extension;
 
 
-    public ShowDiffAction(String previousCode, VirtualFile previousFile, Document document, String extension) {
+    public ShowASMDiffAction(String previousCode, VirtualFile previousFile, Document document, String extension) {
         super("Show differences",
                 "Shows differences from the previous version of bytecode for this file",
                 IconLoader.getIcon("/actions/diffWithCurrent.png"));

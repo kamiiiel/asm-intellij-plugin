@@ -16,7 +16,7 @@
  * /
  */
 
-package org.objectweb.asm.idea.view;
+package org.objectweb.asm.idea.plugin.view;
 
 
 import com.intellij.openapi.Disposable;
@@ -34,9 +34,9 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.PopupHandler;
-import org.objectweb.asm.idea.action.ShowDiffAction;
-import org.objectweb.asm.idea.action.ShowSettingsAction;
-import org.objectweb.asm.idea.common.Constants;
+import org.objectweb.asm.idea.plugin.action.ShowASMDiffAction;
+import org.objectweb.asm.idea.plugin.action.ShowASMSettingsAction;
+import org.objectweb.asm.idea.plugin.common.Constants;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,7 +51,7 @@ public class ACodeView extends SimpleToolWindowPanel implements Disposable {
     protected final KeymapManager keymapManager;
     private final String extension;
     protected Editor editor;
-    private ShowDiffAction showDiffAction;
+    private ShowASMDiffAction showASMDiffAction;
 
     public ACodeView(final ToolWindowManager toolWindowManager, KeymapManager keymapManager, final Project project, final String fileExtension) {
         super(true, true);
@@ -66,13 +66,13 @@ public class ACodeView extends SimpleToolWindowPanel implements Disposable {
         final EditorFactory editorFactory = EditorFactory.getInstance();
         Document document = editorFactory.createDocument("");
         editor = editorFactory.createEditor(document, project, FileTypeManager.getInstance().getFileTypeByExtension(extension), true);
-        showDiffAction = new ShowDiffAction(null, null, document, extension);
+        showASMDiffAction = new ShowASMDiffAction(null, null, document, extension);
 
         final JComponent editorComponent = editor.getComponent();
         add(editorComponent);
         DefaultActionGroup group = new DefaultActionGroup();
-        group.add(showDiffAction);
-        group.add(new ShowSettingsAction());
+        group.add(showASMDiffAction);
+        group.add(new ShowASMSettingsAction());
 
         final ActionManager actionManager = ActionManager.getInstance();
         final ActionToolbar actionToolBar = actionManager.createActionToolbar(Constants.PLUGIN_WINDOW_NAME, group, true);
@@ -83,14 +83,14 @@ public class ACodeView extends SimpleToolWindowPanel implements Disposable {
     }
 
     public void setCode(final VirtualFile file, final String code) {
-        final String text = showDiffAction.getDocument().getText();
-        if (showDiffAction.getPreviousFile() == null || file == null || showDiffAction.getPreviousFile().getPath().equals(file.getPath()) && !Constants.NO_CLASS_FOUND.equals(text)) {
-            if (file != null) showDiffAction.setPreviousCode(text);
-        } else if (!showDiffAction.getPreviousFile().getPath().equals(file.getPath())) {
-            showDiffAction.setPreviousCode(""); // reset previous code
+        final String text = showASMDiffAction.getDocument().getText();
+        if (showASMDiffAction.getPreviousFile() == null || file == null || showASMDiffAction.getPreviousFile().getPath().equals(file.getPath()) && !Constants.NO_CLASS_FOUND.equals(text)) {
+            if (file != null) showASMDiffAction.setPreviousCode(text);
+        } else if (!showASMDiffAction.getPreviousFile().getPath().equals(file.getPath())) {
+            showASMDiffAction.setPreviousCode(""); // reset previous code
         }
-        showDiffAction.getDocument().setText(code);
-        if (file != null) showDiffAction.setPreviousFile(file);
+        showASMDiffAction.getDocument().setText(code);
+        if (file != null) showASMDiffAction.setPreviousFile(file);
         editor.getScrollingModel().scrollTo(editor.offsetToLogicalPosition(0), ScrollType.MAKE_VISIBLE);
     }
 

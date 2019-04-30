@@ -16,7 +16,7 @@
  * /
  */
 
-package org.objectweb.asm.idea.config;
+package org.objectweb.asm.idea.plugin.config;
 /**
  * Created by IntelliJ IDEA.
  * User: cedric
@@ -29,7 +29,7 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import org.jdom.Element;
-import org.objectweb.asm.idea.common.Constants;
+import org.objectweb.asm.idea.plugin.common.Constants;
 
 /**
  * A component created just to be able to configure the plugin.

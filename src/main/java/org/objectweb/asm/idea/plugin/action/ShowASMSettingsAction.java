@@ -16,17 +16,17 @@
  * /
  */
 
-package org.objectweb.asm.idea.action;
+package org.objectweb.asm.idea.plugin.action;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.util.IconLoader;
-import org.objectweb.asm.idea.config.PluginConfig;
+import org.objectweb.asm.idea.plugin.config.PluginConfig;
 
-public class ShowSettingsAction extends AnAction {
+public class ShowASMSettingsAction extends AnAction {
 
-    public ShowSettingsAction() {
+    public ShowASMSettingsAction() {
         super("Settings", "Show settings for ASM plugin", IconLoader.getIcon("/general/projectSettings.png"));
     }
 

@@ -15,7 +15,7 @@
  *  limitations under the License.
  * /
  */
-package org.objectweb.asm.idea.common;
+package org.objectweb.asm.idea.plugin.common;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,8 +29,8 @@ package org.objectweb.asm.idea.common;
  * Constants used in various places of the code.
  */
 public abstract class Constants {
-    public final static String PLUGIN_WINDOW_NAME = "ASM";
-    public final static String FILE_NAME = "asm";
+    public final static String PLUGIN_WINDOW_NAME = "ASM Bytecode Viewer";
+    public final static String FILE_NAME = "asm-plugin";
     public final static String NO_CLASS_FOUND = "// couldn't generate bytecode view, no .class file found";
-    public final static String COMPONENT_NAME = "ASMPluginConfiguration";
+    public final static String COMPONENT_NAME = "ASMIdeaPluginConfiguration";
 }

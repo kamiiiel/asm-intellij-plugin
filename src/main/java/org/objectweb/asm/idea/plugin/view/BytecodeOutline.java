@@ -16,13 +16,13 @@
  * /
  */
 
-package org.objectweb.asm.idea.view;
+package org.objectweb.asm.idea.plugin.view;
 
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
-import org.objectweb.asm.idea.common.FileTypeExtension;
+import org.objectweb.asm.idea.plugin.common.FileTypeExtension;
 
 
 /**

@@ -16,7 +16,7 @@
  * /
  */
 
-package org.objectweb.asm.idea.util;
+package org.objectweb.asm.idea.plugin.util;
 /**
  * Created by IntelliJ IDEA.
  * User: cedric
@@ -25,7 +25,7 @@ package org.objectweb.asm.idea.util;
  * Updated by: Kamiel
  */
 
-import org.objectweb.asm.idea.config.GroovyCodeStyle;
+import org.objectweb.asm.idea.plugin.config.GroovyCodeStyle;
 import reloc.org.objectweb.asm.Label;
 import reloc.org.objectweb.asm.Opcodes;
 import reloc.org.objectweb.asm.Type;

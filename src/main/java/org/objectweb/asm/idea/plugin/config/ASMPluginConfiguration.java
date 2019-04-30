@@ -16,7 +16,7 @@
  *  Updated by: Kamiel
  */
 
-package org.objectweb.asm.idea.config;
+package org.objectweb.asm.idea.plugin.config;
 
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.EnumComboBoxModel;

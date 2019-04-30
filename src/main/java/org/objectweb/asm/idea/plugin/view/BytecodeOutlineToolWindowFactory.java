@@ -16,7 +16,7 @@
  * /
  */
 
-package org.objectweb.asm.idea.view;
+package org.objectweb.asm.idea.plugin.view;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
