@@ -22,6 +22,7 @@ package org.objectweb.asm.idea.config;
  * User: cedric
  * Date: 18/01/11
  * Time: 19:51
+ * Updated by: Kamiel
  */
 
 import com.intellij.openapi.components.PersistentStateComponent;
@@ -36,7 +37,7 @@ import org.objectweb.asm.idea.common.Constants;
 @State(
         name = Constants.COMPONENT_NAME,
         storages = {
-                @Storage(id = "ASMPlugin", file = "$PROJECT_FILE$")
+                @Storage(file = "$PROJECT_FILE$")
         }
 )
 public class ASMPluginComponent implements PersistentStateComponent<Element> {

@@ -25,9 +25,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.compiler.CompileContext;
 import com.intellij.openapi.compiler.CompileScope;
-import com.intellij.openapi.compiler.CompileStatusNotification;
 import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditor;
@@ -93,9 +91,6 @@ public class ShowBytecodeOutlineAction extends AnAction {
         final PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
         if (psiFile instanceof PsiClassOwner) {
             final Module module = ModuleUtil.findModuleForPsiElement(psiFile);
-            final CompilerModuleExtension cme = CompilerModuleExtension.getInstance(module);
-            final CompilerManager compilerManager = CompilerManager.getInstance(project);
-            final VirtualFile[] files = {virtualFile};
             if ("class".equals(virtualFile.getExtension())) {
                 updateToolWindowContents(project, virtualFile);
             } else if (!virtualFile.isInLocalFileSystem() && !virtualFile.isWritable()) {
@@ -106,57 +101,42 @@ public class ShowBytecodeOutlineAction extends AnAction {
                 }
             } else {
                 final Application application = ApplicationManager.getApplication();
-                application.runWriteAction(new Runnable() {
-                    public void run() {
-                        FileDocumentManager.getInstance().saveAllDocuments();
+                application.runWriteAction(() -> FileDocumentManager.getInstance().saveAllDocuments());
+                application.executeOnPooledThread(() -> {
+                    final CompilerModuleExtension cme = CompilerModuleExtension.getInstance(module);
+                    final CompilerManager compilerManager = CompilerManager.getInstance(project);
+                    final VirtualFile[] files = {virtualFile};
+                    final CompileScope compileScope = compilerManager.createFilesCompileScope(files);
+                    final VirtualFile[] result = {null};
+                    final VirtualFile[] outputDirectories = cme == null ? null : cme.getOutputRoots(true);
+                    final Semaphore semaphore = new Semaphore(1);
+                    try {
+                        semaphore.acquire();
+                    } catch (InterruptedException e1) {
+                        result[0] = null;
                     }
-                });
-                application.executeOnPooledThread(new Runnable() {
-                    public void run() {
-                        final CompileScope compileScope = compilerManager.createFilesCompileScope(files);
-                        final VirtualFile[] result = {null};
-                        final VirtualFile[] outputDirectories = cme == null ? null : cme.getOutputRoots(true);
-                        final Semaphore semaphore = new Semaphore(1);
+                    if (outputDirectories != null && compilerManager.isUpToDate(compileScope)) {
+                        application.invokeLater(() -> {
+                            result[0] = findClassFile(outputDirectories, psiFile);
+                            semaphore.release();
+                        });
+                    } else {
+                        application.invokeLater(() -> compilerManager.compile(files, (aborted, errors, warnings, compileContext) -> {
+                            if (errors == 0) {
+                                VirtualFile[] outputDirectories1 = cme.getOutputRoots(true);
+                                if (outputDirectories1 != null) {
+                                    result[0] = findClassFile(outputDirectories1, psiFile);
+                                }
+                            }
+                            semaphore.release();
+                        }));
                         try {
                             semaphore.acquire();
                         } catch (InterruptedException e1) {
                             result[0] = null;
                         }
-                        if (outputDirectories != null && compilerManager.isUpToDate(compileScope)) {
-                            application.invokeLater(new Runnable() {
-                                public void run() {
-                                    result[0] = findClassFile(outputDirectories, psiFile);
-                                    semaphore.release();
-                                }
-                            });
-                        } else {
-                            application.invokeLater(new Runnable() {
-                                public void run() {
-                                    compilerManager.compile(files, new CompileStatusNotification() {
-                                        public void finished(boolean aborted, int errors, int warnings, final CompileContext compileContext) {
-                                            if (errors == 0) {
-                                                VirtualFile[] outputDirectories = cme.getOutputRoots(true);
-                                                if (outputDirectories != null) {
-                                                    result[0] = findClassFile(outputDirectories, psiFile);
-                                                }
-                                            }
-                                            semaphore.release();
-                                        }
-                                    });
-                                }
-                            });
-                            try {
-                                semaphore.acquire();
-                            } catch (InterruptedException e1) {
-                                result[0] = null;
-                            }
-                        }
-                        application.invokeLater(new Runnable() {
-                            public void run() {
-                                updateToolWindowContents(project, result[0]);
-                            }
-                        });
                     }
+                    application.invokeLater(() -> updateToolWindowContents(project, result[0]));
                 });
             }
         }
@@ -196,7 +176,7 @@ public class ShowBytecodeOutlineAction extends AnAction {
                         if (parentClass != null) {
                             className = parentClass.getQualifiedName() + JavaAnonymousClassesHelper.getName((PsiAnonymousClass) psiClass);
                         }
-                    } else if (psiClass instanceof PsiClass) {
+                    } else {
                         className = PsiTreeUtil.getParentOfType(psiClass, PsiClass.class).getQualifiedName();
                     }
                 }
@@ -236,52 +216,50 @@ public class ShowBytecodeOutlineAction extends AnAction {
      * @param file    the class file
      */
     private void updateToolWindowContents(final Project project, final VirtualFile file) {
-        ApplicationManager.getApplication().runWriteAction(new Runnable() {
-            public void run() {
-                BytecodeOutline bytecodeOutline = BytecodeOutline.getInstance(project);
-                BytecodeASMified bytecodeASMified = BytecodeASMified.getInstance(project);
-                GroovifiedView groovifiedView = GroovifiedView.getInstance(project);
-                ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
+        ApplicationManager.getApplication().runWriteAction(() -> {
+            BytecodeOutline bytecodeOutline = BytecodeOutline.getInstance(project);
+            BytecodeASMified asmifiedView = BytecodeASMified.getInstance(project);
+            GroovifiedView groovifiedView = GroovifiedView.getInstance(project);
+            ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
 
-                if (file == null) {
-                    bytecodeOutline.setCode(file, Constants.NO_CLASS_FOUND);
-                    bytecodeASMified.setCode(file, Constants.NO_CLASS_FOUND);
-                    groovifiedView.setCode(file, Constants.NO_CLASS_FOUND);
-                    toolWindowManager.getToolWindow(Constants.PLUGIN_WINDOW_NAME).activate(null);
-                    return;
-                }
-
-                StringWriter stringWriter = new StringWriter();
-                ClassReader reader = null;
-                try {
-                    file.refresh(false, false);
-                    reader = new ClassReader(file.contentsToByteArray());
-                } catch (IOException e) {
-                    return;
-                }
-                int flags = 0;
-                final ASMPluginComponent asmPluginComponent = project.getComponent(ASMPluginComponent.class);
-                ApplicationConfig applicationConfig = asmPluginComponent.getApplicationConfig();
-                if (applicationConfig.isSkipDebug()) flags = flags | ClassReader.SKIP_DEBUG;
-                if (applicationConfig.isSkipFrames()) flags = flags | ClassReader.SKIP_FRAMES;
-                if (applicationConfig.isExpandFrames()) flags = flags | ClassReader.EXPAND_FRAMES;
-                if (applicationConfig.isSkipCode()) flags = flags | ClassReader.SKIP_CODE;
-
-                reader.accept(new TraceClassVisitor(new PrintWriter(stringWriter)), flags);
-                bytecodeOutline.setCode(file, stringWriter.toString());
-
-                stringWriter.getBuffer().setLength(0);
-                reader.accept(new TraceClassVisitor(null, new GroovifiedTextifier(applicationConfig.getGroovyCodeStyle()), new PrintWriter(stringWriter)), ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
-                groovifiedView.setCode(file, stringWriter.toString());
-
-                stringWriter.getBuffer().setLength(0);
-                reader.accept(new TraceClassVisitor(null, new ASMifier(), new PrintWriter(stringWriter)), flags);
-                PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText(Constants.FILE_NAME, FileTypeManager.getInstance().getFileTypeByExtension(FileTypeExtension.JAVA.getValue()), stringWriter.toString());
-                CodeStyleManager.getInstance(project).reformat(psiFile);
-                bytecodeASMified.setCode(file, psiFile.getText());
-
+            if (file == null) {
+                bytecodeOutline.setCode(file, Constants.NO_CLASS_FOUND);
+                asmifiedView.setCode(file, Constants.NO_CLASS_FOUND);
+                groovifiedView.setCode(file, Constants.NO_CLASS_FOUND);
                 toolWindowManager.getToolWindow(Constants.PLUGIN_WINDOW_NAME).activate(null);
+                return;
             }
+
+            StringWriter stringWriter = new StringWriter();
+            ClassReader reader = null;
+            try {
+                file.refresh(false, false);
+                reader = new ClassReader(file.contentsToByteArray());
+            } catch (IOException e) {
+                return;
+            }
+            int flags = 0;
+            ApplicationConfig applicationConfig = ASMPluginComponent.getApplicationConfig();
+            if (applicationConfig.isSkipDebug()) flags = flags | ClassReader.SKIP_DEBUG;
+            if (applicationConfig.isSkipFrames()) flags = flags | ClassReader.SKIP_FRAMES;
+            if (applicationConfig.isExpandFrames()) flags = flags | ClassReader.EXPAND_FRAMES;
+            if (applicationConfig.isSkipCode()) flags = flags | ClassReader.SKIP_CODE;
+
+            reader.accept(new TraceClassVisitor(new PrintWriter(stringWriter)), flags);
+            bytecodeOutline.setCode(file, stringWriter.toString());
+
+            stringWriter.getBuffer().setLength(0);
+            reader.accept(new TraceClassVisitor(null, new ASMifier(), new PrintWriter(stringWriter)), flags);
+            PsiFile psiFile = PsiFileFactory.getInstance(project).createFileFromText(Constants.FILE_NAME, FileTypeManager.getInstance().getFileTypeByExtension(FileTypeExtension.JAVA.getValue()), stringWriter.toString());
+            CodeStyleManager.getInstance(project).reformat(psiFile);
+            asmifiedView.setCode(file, psiFile.getText());
+
+            stringWriter.getBuffer().setLength(0);
+            reader.accept(new TraceClassVisitor(null, new GroovifiedTextifier(applicationConfig.getGroovyCodeStyle()), new PrintWriter(stringWriter)), ClassReader.SKIP_FRAMES | ClassReader.SKIP_DEBUG);
+            groovifiedView.setCode(file, stringWriter.toString());
+
+
+            toolWindowManager.getToolWindow(Constants.PLUGIN_WINDOW_NAME).activate(null);
         });
     }
 }

@@ -22,6 +22,7 @@ package org.objectweb.asm.idea.config;
  * User: cedric
  * Date: 18/01/11
  * Time: 22:37
+ * Updated by: Kamiel
  */
 
 /**

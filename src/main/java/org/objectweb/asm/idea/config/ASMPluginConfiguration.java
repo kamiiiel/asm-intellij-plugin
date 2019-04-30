@@ -13,7 +13,7 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- * /
+ *  Updated by: Kamiel
  */
 
 package org.objectweb.asm.idea.config;
@@ -24,6 +24,7 @@ import com.intellij.ui.EnumComboBoxModel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.EnumMap;
+import java.util.Objects;
 
 public class ASMPluginConfiguration {
     private JPanel contentPane;
@@ -31,7 +32,7 @@ public class ASMPluginConfiguration {
     private JCheckBox skipFramesCheckBox;
     private JCheckBox skipCodeCheckBox;
     private JCheckBox expandFramesCheckBox;
-    private JComboBox groovyCodeStyleComboBox;
+    private JComboBox<GroovyCodeStyle> groovyCodeStyleComboBox;
 
     public ASMPluginConfiguration() {
     }
@@ -61,21 +62,20 @@ public class ASMPluginConfiguration {
         if (skipFramesCheckBox.isSelected() != applicationConfig.isSkipFrames()) return true;
         if (skipCodeCheckBox.isSelected() != applicationConfig.isSkipCode()) return true;
         if (expandFramesCheckBox.isSelected() != applicationConfig.isExpandFrames()) return true;
-        if (!groovyCodeStyleComboBox.getSelectedItem().equals(applicationConfig.getGroovyCodeStyle())) return true;
-        return false;
+        return !Objects.equals(groovyCodeStyleComboBox.getSelectedItem(), applicationConfig.getGroovyCodeStyle());
     }
 
     private void createUIComponents() {
-        ComboBoxModel model = new EnumComboBoxModel<GroovyCodeStyle>(GroovyCodeStyle.class);
-        groovyCodeStyleComboBox = new ComboBox(model);
-        groovyCodeStyleComboBox.setRenderer(new GroovyCodeStyleCellRenderer());
+        ComboBoxModel<GroovyCodeStyle> model = new EnumComboBoxModel<>(GroovyCodeStyle.class);
+        groovyCodeStyleComboBox = new ComboBox<>(model);
+        groovyCodeStyleComboBox.setRenderer(new GroovyCodeStyleCellRenderer<>());
     }
 
-    private static class GroovyCodeStyleCellRenderer implements ListCellRenderer {
+    private static class GroovyCodeStyleCellRenderer<T> implements ListCellRenderer<T> {
         private EnumMap<GroovyCodeStyle, JLabel> labels;
 
         private GroovyCodeStyleCellRenderer() {
-            labels = new EnumMap<GroovyCodeStyle, JLabel>(GroovyCodeStyle.class);
+            labels = new EnumMap<>(GroovyCodeStyle.class);
             for (GroovyCodeStyle codeStyle : GroovyCodeStyle.values()) {
                 labels.put(codeStyle, new JLabel(codeStyle.label));
             }

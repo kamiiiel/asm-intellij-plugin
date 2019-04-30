@@ -6,6 +6,10 @@
     <idea-version since-build="139.1803"/>
 
     <change-notes><![CDATA[
+        <b>Version 7.1</b>
+        <ul>
+            <li>Upgraded ASM to 7.1 and fix some bugs</li>
+        </ul>
         <b>Version 0.6.0</b>
         <ul>
             <li>Add support for the new versions of Intellij</li>

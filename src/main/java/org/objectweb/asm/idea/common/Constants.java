@@ -22,6 +22,7 @@ package org.objectweb.asm.idea.common;
  * User: cedric
  * Date: 18/01/11
  * Time: 06:58
+ * Updated by: Kamiel
  */
 
 /**

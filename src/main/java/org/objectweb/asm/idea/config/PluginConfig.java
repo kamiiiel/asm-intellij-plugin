@@ -38,35 +38,42 @@ public class PluginConfig implements Configurable {
     }
 
     @Nls
+    @Override
     public String getDisplayName() {
-        return applicationConfig.APPLICATION_NAME;
+        return ApplicationConfig.APPLICATION_NAME;
     }
 
+    @Override
     public String getHelpTopic() {
         return null;
     }
 
+    @Override
     public JComponent createComponent() {
         if (configDialog == null) configDialog = new ASMPluginConfiguration();
         return configDialog.getRootPane();
     }
 
+    @Override
     public boolean isModified() {
         return configDialog != null && configDialog.isModified(applicationConfig);
     }
 
+    @Override
     public void apply() throws ConfigurationException {
         if (configDialog != null) {
             configDialog.getData(applicationConfig);
         }
     }
 
+    @Override
     public void reset() {
         if (configDialog != null) {
             configDialog.setData(applicationConfig);
         }
     }
 
+    @Override
     public void disposeUIResources() {
         configDialog = null;
     }

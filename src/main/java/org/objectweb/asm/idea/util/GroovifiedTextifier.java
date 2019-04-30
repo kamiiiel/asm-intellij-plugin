@@ -22,6 +22,7 @@ package org.objectweb.asm.idea.util;
  * User: cedric
  * Date: 17/01/11
  * Time: 22:07
+ * Updated by: Kamiel
  */
 
 import org.objectweb.asm.idea.config.GroovyCodeStyle;
@@ -74,50 +75,51 @@ public class GroovifiedTextifier extends Textifier {
         this.codeStyle = codeStyle;
     }
 
+    @Override
     protected Textifier createTextifier() {
         return new GroovifiedMethodTextifier(codeStyle);
     }
 
     @Override
     public Textifier visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
-        buf.setLength(0);
-        buf.append('\n');
+        this.stringBuilder.setLength(0);
+        this.stringBuilder.append('\n');
         if ((access & Opcodes.ACC_DEPRECATED) != 0) {
-            buf.append(tab).append("// @Deprecated\n");
+            this.stringBuilder.append(tab).append("// @Deprecated\n");
         }
-        buf.append(tab).append("@groovyx.ast.bytecode.Bytecode\n");
+        this.stringBuilder.append(tab).append("@groovyx.ast.bytecode.Bytecode\n");
         Method method = new Method(name, desc);
 
-        buf.append(tab);
+        this.stringBuilder.append(tab);
         appendAccess(access);
         if ((access & Opcodes.ACC_NATIVE) != 0) {
-            buf.append("native ");
+            this.stringBuilder.append("native ");
         }
-        buf.append(groovyClassName(method.getReturnType().getClassName()));
-        buf.append(' ');
-        buf.append(name);
-        buf.append('(');
+        this.stringBuilder.append(groovyClassName(method.getReturnType().getClassName()));
+        this.stringBuilder.append(' ');
+        this.stringBuilder.append(name);
+        this.stringBuilder.append('(');
         final Type[] argumentTypes = method.getArgumentTypes();
         char arg = 'a';
         for (int j = 0, argumentTypesLength = argumentTypes.length; j < argumentTypesLength; j++) {
             final Type type = argumentTypes[j];
-            buf.append(groovyClassName(type.getClassName()));
-            buf.append(' ');
-            buf.append(arg);
-            if (j < argumentTypesLength - 1) buf.append(',');
+            this.stringBuilder.append(groovyClassName(type.getClassName()));
+            this.stringBuilder.append(' ');
+            this.stringBuilder.append(arg);
+            if (j < argumentTypesLength - 1) this.stringBuilder.append(',');
             arg++;
         }
-        buf.append(')');
+        this.stringBuilder.append(')');
         if (exceptions != null && exceptions.length > 0) {
-            buf.append(" throws ");
+            this.stringBuilder.append(" throws ");
             for (int i = 0; i < exceptions.length; ++i) {
                 appendDescriptor(INTERNAL_NAME, exceptions[i].replace('/', '.'));
-                if (i < exceptions.length - 1) buf.append(',');
+                if (i < exceptions.length - 1) this.stringBuilder.append(',');
             }
         }
-        buf.append(" {");
-        buf.append('\n');
-        text.add(buf.toString());
+        this.stringBuilder.append(" {");
+        this.stringBuilder.append('\n');
+        text.add(this.stringBuilder.toString());
 
         GroovifiedMethodTextifier tcv = (GroovifiedMethodTextifier) createTextifier();
         text.add(tcv.getText());
@@ -126,43 +128,43 @@ public class GroovifiedTextifier extends Textifier {
     }
 
     /**
-     * Appends a string representation of the given access modifiers to {@link #buf buf}.
+     * Appends a string representation of the given access modifiers to {@link #stringBuilder stringBuilder}.
      *
      * @param access some access modifiers.
      */
     private void appendAccess(final int access) {
         if ((access & Opcodes.ACC_PUBLIC) != 0) {
-            buf.append("public ");
+            this.stringBuilder.append("public ");
         }
         if ((access & Opcodes.ACC_PRIVATE) != 0) {
-            buf.append("private ");
+            this.stringBuilder.append("private ");
         }
         if ((access & Opcodes.ACC_PROTECTED) != 0) {
-            buf.append("protected ");
+            this.stringBuilder.append("protected ");
         }
         if ((access & Opcodes.ACC_FINAL) != 0) {
-            buf.append("final ");
+            this.stringBuilder.append("final ");
         }
         if ((access & Opcodes.ACC_STATIC) != 0) {
-            buf.append("static ");
+            this.stringBuilder.append("static ");
         }
         if ((access & Opcodes.ACC_SYNCHRONIZED) != 0) {
-            buf.append("synchronized ");
+            this.stringBuilder.append("synchronized ");
         }
         if ((access & Opcodes.ACC_VOLATILE) != 0) {
-            buf.append("volatile ");
+            this.stringBuilder.append("volatile ");
         }
         if ((access & Opcodes.ACC_TRANSIENT) != 0) {
-            buf.append("transient ");
+            this.stringBuilder.append("transient ");
         }
         if ((access & Opcodes.ACC_ABSTRACT) != 0) {
-            buf.append("abstract ");
+            this.stringBuilder.append("abstract ");
         }
         if ((access & Opcodes.ACC_STRICT) != 0) {
-            buf.append("strictfp ");
+            this.stringBuilder.append("strictfp ");
         }
         if ((access & Opcodes.ACC_ENUM) != 0) {
-            buf.append("enum ");
+            this.stringBuilder.append("enum ");
         }
     }
 
@@ -203,49 +205,49 @@ public class GroovifiedTextifier extends Textifier {
         }
 
         public void visitInsn(final int opcode) {
-            buf.setLength(0);
-            buf.append(tab2).append(OPCODES[opcode].toLowerCase()).append('\n');
-            text.add(buf.toString());
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2).append(OPCODES[opcode].toLowerCase()).append('\n');
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitIntInsn(final int opcode, final int operand) {
-            buf.setLength(0);
-            buf.append(tab2)
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2)
                     .append(OPCODES[opcode].toLowerCase())
                     .append(' ')
                     .append(opcode == Opcodes.NEWARRAY
                             ? (isLegacy() ? TYPES[operand] : ATYPES[operand])
                             : Integer.toString(operand))
                     .append('\n');
-            text.add(buf.toString());
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitVarInsn(final int opcode, final int var) {
-            buf.setLength(0);
-            buf.append(tab2)
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2)
                     .append(OPCODES[opcode].toLowerCase())
                     .append(' ')
                     .append(var)
                     .append('\n');
-            text.add(buf.toString());
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitTypeInsn(final int opcode, final String type) {
-            buf.setLength(0);
+            this.stringBuilder.setLength(0);
             final String opcodeStr = OPCODES[opcode];
-            buf.append(tab2).append("NEW".equals(opcodeStr) ?
+            this.stringBuilder.append(tab2).append("NEW".equals(opcodeStr) ?
                     (isLegacy() ? "_new" : "newobject")
                     : "INSTANCEOF".equals(opcodeStr) ?
                     (isLegacy() ? "_instanceof" : "instance of:") : opcodeStr.toLowerCase()).append(' ');
             if (isLegacy()) {
-                buf.append('\'');
+                this.stringBuilder.append('\'');
                 appendDescriptor(INTERNAL_NAME, type);
-                buf.append('\'');
+                this.stringBuilder.append('\'');
             } else {
-                buf.append(groovyClassName(type.replace('/', '.')));
+                this.stringBuilder.append(groovyClassName(type.replace('/', '.')));
             }
-            buf.append('\n');
-            text.add(buf.toString());
+            this.stringBuilder.append('\n');
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitFieldInsn(
@@ -253,23 +255,23 @@ public class GroovifiedTextifier extends Textifier {
                 final String owner,
                 final String name,
                 final String desc) {
-            buf.setLength(0);
-            buf.append(tab2).append(OPCODES[opcode].toLowerCase()).append(' ');
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2).append(OPCODES[opcode].toLowerCase()).append(' ');
             if (isLegacy()) {
-                buf.append('\'');
+                this.stringBuilder.append('\'');
                 appendDescriptor(INTERNAL_NAME, owner);
-                buf.append('.').append(name).append("','");
+                this.stringBuilder.append('.').append(name).append("','");
                 appendDescriptor(FIELD_DESCRIPTOR, desc);
-                buf.append('\'');
+                this.stringBuilder.append('\'');
             } else {
-                buf.append(groovyClassName(Type.getObjectType(owner).getClassName()));
-                buf.append('.');
-                buf.append(name);
-                buf.append(" >> ");
-                buf.append(groovyClassName(Type.getObjectType(desc).getClassName()));
+                this.stringBuilder.append(groovyClassName(Type.getObjectType(owner).getClassName()));
+                this.stringBuilder.append('.');
+                this.stringBuilder.append(name);
+                this.stringBuilder.append(" >> ");
+                this.stringBuilder.append(groovyClassName(Type.getObjectType(desc).getClassName()));
             }
-            buf.append('\n');
-            text.add(buf.toString());
+            this.stringBuilder.append('\n');
+            text.add(this.stringBuilder.toString());
 
         }
 
@@ -278,43 +280,43 @@ public class GroovifiedTextifier extends Textifier {
                 final String owner,
                 final String name,
                 final String desc) {
-            buf.setLength(0);
-            buf.append(tab2).append(OPCODES[opcode].toLowerCase()).append(' ');
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2).append(OPCODES[opcode].toLowerCase()).append(' ');
             if (isLegacy()) {
-                buf.append('\'');
+                this.stringBuilder.append('\'');
                 appendDescriptor(INTERNAL_NAME, owner);
-                buf.append('.').append(name).append("','");
+                this.stringBuilder.append('.').append(name).append("','");
                 appendDescriptor(METHOD_DESCRIPTOR, desc);
-                buf.append('\'');
+                this.stringBuilder.append('\'');
             } else {
-                buf.append(groovyClassName(Type.getObjectType(owner).getClassName()));
-                buf.append('.');
-                if ("<init>".equals(name)) buf.append('"');
-                buf.append(name);
-                if ("<init>".equals(name)) buf.append('"');
-                buf.append('(');
+                this.stringBuilder.append(groovyClassName(Type.getObjectType(owner).getClassName()));
+                this.stringBuilder.append('.');
+                if ("<init>".equals(name)) this.stringBuilder.append('"');
+                this.stringBuilder.append(name);
+                if ("<init>".equals(name)) this.stringBuilder.append('"');
+                this.stringBuilder.append('(');
                 final Type[] types = Type.getArgumentTypes(desc);
                 for (int i = 0; i < types.length; i++) {
                     Type type = types[i];
-                    buf.append(groovyClassName(type.getClassName()));
-                    if (i < types.length - 1) buf.append(',');
+                    this.stringBuilder.append(groovyClassName(type.getClassName()));
+                    if (i < types.length - 1) this.stringBuilder.append(',');
                 }
-                buf.append(") >> ");
-                buf.append(groovyClassName(Type.getType(desc).getClassName()));
+                this.stringBuilder.append(") >> ");
+                this.stringBuilder.append(groovyClassName(Type.getType(desc).getClassName()));
             }
-            buf.append('\n');
-            text.add(buf.toString());
+            this.stringBuilder.append('\n');
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitJumpInsn(final int opcode, final Label label) {
-            buf.setLength(0);
-            buf.append(tab2).append(
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2).append(
                     OPCODES[opcode].equals("GOTO") ?
                             (isLegacy() ? "_goto" : "go to:")
                             : OPCODES[opcode].toLowerCase()).append(' ');
             appendLabel(label);
-            buf.append('\n');
-            text.add(buf.toString());
+            this.stringBuilder.append('\n');
+            text.add(this.stringBuilder.toString());
         }
 
         @Override
@@ -333,7 +335,7 @@ public class GroovifiedTextifier extends Textifier {
         }
 
         /**
-         * Appends the name of the given label to {@link #buf buf}. Creates a new label name if the given label does not
+         * Appends the name of the given label to {@link #stringBuilder stringBuilder}. Creates a new label name if the given label does not
          * yet have one.
          *
          * @param l a label.
@@ -347,48 +349,48 @@ public class GroovifiedTextifier extends Textifier {
                 name = "l" + labelNames.size();
                 labelNames.put(l, name);
             }
-            buf.append(name);
+            this.stringBuilder.append(name);
         }
 
         public void visitLabel(final Label label) {
-            buf.setLength(0);
-            buf.append(ltab);
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(ltab);
             appendLabel(label);
-            if (codeStyle == GroovyCodeStyle.GROOVIFIER_0_2_0) buf.append(':');
-            buf.append('\n');
-            text.add(buf.toString());
+            if (codeStyle == GroovyCodeStyle.GROOVIFIER_0_2_0) this.stringBuilder.append(':');
+            this.stringBuilder.append('\n');
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitLdcInsn(final Object cst) {
-            buf.setLength(0);
-            buf.append(tab2).append("ldc ");
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2).append("ldc ");
             if (cst instanceof String) {
-                Printer.appendString(buf, (String) cst);
+                Printer.appendString(this.stringBuilder, (String) cst);
             } else if (cst instanceof Type) {
-                buf.append(((Type) cst).getDescriptor()).append(".class");
+                this.stringBuilder.append(((Type) cst).getDescriptor()).append(".class");
             } else if (cst instanceof Float) {
-                buf.append(cst).append('f');
+                this.stringBuilder.append(cst).append('f');
             } else if (cst instanceof Double) {
-                buf.append(cst).append('d');
+                this.stringBuilder.append(cst).append('d');
             } else if (cst instanceof Integer) {
-                buf.append(cst).append('i');
+                this.stringBuilder.append(cst).append('i');
             } else {
-                buf.append(cst);
+                this.stringBuilder.append(cst);
             }
-            buf.append('\n');
-            text.add(buf.toString());
+            this.stringBuilder.append('\n');
+            text.add(this.stringBuilder.toString());
 
         }
 
         public void visitIincInsn(final int var, final int increment) {
-            buf.setLength(0);
-            buf.append(tab2)
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2)
                     .append("iinc ")
                     .append(var)
                     .append(',')
                     .append(increment)
                     .append('\n');
-            text.add(buf.toString());
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitTableSwitchInsn(
@@ -396,48 +398,48 @@ public class GroovifiedTextifier extends Textifier {
                 final int max,
                 final Label dflt,
                 final Label[] labels) {
-            buf.setLength(0);
-            buf.append(tab2).append("tableswitch(\n");
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2).append("tableswitch(\n");
             for (int i = 0; i < labels.length; ++i) {
-                buf.append(tab3).append(min + i).append(": ");
+                this.stringBuilder.append(tab3).append(min + i).append(": ");
                 appendLabel(labels[i]);
-                buf.append(",\n");
+                this.stringBuilder.append(",\n");
             }
-            buf.append(tab3).append("default: ");
+            this.stringBuilder.append(tab3).append("default: ");
             appendLabel(dflt);
-            buf.append(tab2).append("\n)\n");
-            text.add(buf.toString());
+            this.stringBuilder.append(tab2).append("\n)\n");
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitLookupSwitchInsn(
                 final Label dflt,
                 final int[] keys,
                 final Label[] labels) {
-            buf.setLength(0);
-            buf.append(tab2).append("lookupswitch(\n");
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2).append("lookupswitch(\n");
             for (int i = 0; i < labels.length; ++i) {
-                buf.append(tab3).append(keys[i]).append(": ");
+                this.stringBuilder.append(tab3).append(keys[i]).append(": ");
                 appendLabel(labels[i]);
-                buf.append(",\n");
+                this.stringBuilder.append(",\n");
             }
-            buf.append(tab3).append("default: ");
+            this.stringBuilder.append(tab3).append("default: ");
             appendLabel(dflt);
-            buf.append(tab2).append("\n)\n");
-            text.add(buf.toString());
+            this.stringBuilder.append(tab2).append("\n)\n");
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitMultiANewArrayInsn(final String desc, final int dims) {
-            buf.setLength(0);
-            buf.append(tab2).append("multianewarray ");
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2).append("multianewarray ");
             if (isLegacy()) {
-                buf.append('\'');
+                this.stringBuilder.append('\'');
                 appendDescriptor(FIELD_DESCRIPTOR, desc);
-                buf.append("\'");
+                this.stringBuilder.append("\'");
             } else {
-                buf.append(groovyClassName(Type.getType(desc).getClassName()));
+                this.stringBuilder.append(groovyClassName(Type.getType(desc).getClassName()));
             }
-            buf.append(',').append(dims).append('\n');
-            text.add(buf.toString());
+            this.stringBuilder.append(',').append(dims).append('\n');
+            text.add(this.stringBuilder.toString());
         }
 
         public void visitTryCatchBlock(
@@ -445,27 +447,27 @@ public class GroovifiedTextifier extends Textifier {
                 final Label end,
                 final Label handler,
                 final String type) {
-            buf.setLength(0);
-            buf.append(tab2).append("trycatchblock ");
+            this.stringBuilder.setLength(0);
+            this.stringBuilder.append(tab2).append("trycatchblock ");
             appendLabel(start);
-            buf.append(',');
+            this.stringBuilder.append(',');
             appendLabel(end);
-            buf.append(',');
+            this.stringBuilder.append(',');
             appendLabel(handler);
-            buf.append(',');
+            this.stringBuilder.append(',');
             if (type != null) {
                 if (isLegacy()) {
-                    buf.append('\'');
+                    this.stringBuilder.append('\'');
                     appendDescriptor(INTERNAL_NAME, type);
-                    buf.append('\'');
+                    this.stringBuilder.append('\'');
                 } else {
-                    buf.append(groovyClassName(type.replace('/', '.')));
+                    this.stringBuilder.append(groovyClassName(type.replace('/', '.')));
                 }
             } else {
                 appendDescriptor(INTERNAL_NAME, type);
             }
-            buf.append('\n');
-            text.add(buf.toString());
+            this.stringBuilder.append('\n');
+            text.add(this.stringBuilder.toString());
 
         }
 
