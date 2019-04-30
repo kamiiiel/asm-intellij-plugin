@@ -76,7 +76,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable groupId="tools" instance="org.objectweb.asm.idea.plugin.config.PluginConfig" />
-        <toolWindow id="ASM" anchor="right" icon="/images/asm.gif" factoryClass="org.objectweb.asm.idea.plugin.view.BytecodeOutlineToolWindowFactory"/>
+        <toolWindow id="ASMPlugin" anchor="right" icon="/images/asm.gif" factoryClass="org.objectweb.asm.idea.plugin.view.BytecodeOutlineToolWindowFactory"/>
         <projectService serviceInterface="org.objectweb.asm.idea.plugin.view.BytecodeOutline" serviceImplementation="org.objectweb.asm.idea.plugin.view.BytecodeOutline"/>
         <projectService serviceInterface="org.objectweb.asm.idea.plugin.view.BytecodeASMified" serviceImplementation="org.objectweb.asm.idea.plugin.view.BytecodeASMified"/>
         <projectService serviceInterface="org.objectweb.asm.idea.plugin.view.GroovifiedView" serviceImplementation="org.objectweb.asm.idea.plugin.view.GroovifiedView"/>
