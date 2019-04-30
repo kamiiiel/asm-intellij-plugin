@@ -5,7 +5,7 @@ http://asm.ow2.org/
 
 
 You can use the plugin in 3 different ways:
-1) Right click somewhere inside the code editor and choose "ASM Bytecode Viewer"
+1) Right click on the generated class file or somewhere inside the code editor and choose "ASM Bytecode Viewer"
 2) In the "Code" menu, choose "ASM Bytecode Viewer"
 3) Right click on the java file in the Project window and choose "ASM Bytecode Viewer"
 
