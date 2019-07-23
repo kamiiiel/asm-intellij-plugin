@@ -7,11 +7,11 @@ buildscript {
 plugins {
     id 'java' apply true
     id 'idea' apply true
-    id "org.jetbrains.intellij" version "0.4.8" apply true
+    id "org.jetbrains.intellij" version "0.4.9" apply true
 }
 
 group 'org.objectweb.asm.idea.action'
-version '7.1' // Plugin version
+version '7.2' // Plugin version
 
 sourceCompatibility='1.8'
 idea {
@@ -22,10 +22,10 @@ idea {
 
 intellij {
     pluginName 'asm-bytecode-viewer'
-//    version 'IC-2017.3' // IntelliJ IDEA dependency
+    version 'IC-2017.3' // IntelliJ IDEA dependency
     downloadSources false
     updateSinceUntilBuild false
-    localPath '/opt/idea-IC/'
+//    localPath '/opt/idea-IC/'
     pluginName 'ASM Bytecode Viewer'
     sandboxDirectory '.sandbox'
     dependencies {

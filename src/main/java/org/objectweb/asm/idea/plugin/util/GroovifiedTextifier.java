@@ -204,12 +204,14 @@ public class GroovifiedTextifier extends Textifier {
             // line numbers are not necessary
         }
 
+        @Override
         public void visitInsn(final int opcode) {
             this.stringBuilder.setLength(0);
             this.stringBuilder.append(tab2).append(OPCODES[opcode].toLowerCase()).append('\n');
             text.add(this.stringBuilder.toString());
         }
 
+        @Override
         public void visitIntInsn(final int opcode, final int operand) {
             this.stringBuilder.setLength(0);
             this.stringBuilder.append(tab2)
@@ -222,6 +224,7 @@ public class GroovifiedTextifier extends Textifier {
             text.add(this.stringBuilder.toString());
         }
 
+        @Override
         public void visitVarInsn(final int opcode, final int var) {
             this.stringBuilder.setLength(0);
             this.stringBuilder.append(tab2)
@@ -232,6 +235,7 @@ public class GroovifiedTextifier extends Textifier {
             text.add(this.stringBuilder.toString());
         }
 
+        @Override
         public void visitTypeInsn(final int opcode, final String type) {
             this.stringBuilder.setLength(0);
             final String opcodeStr = OPCODES[opcode];
@@ -250,6 +254,7 @@ public class GroovifiedTextifier extends Textifier {
             text.add(this.stringBuilder.toString());
         }
 
+        @Override
         public void visitFieldInsn(
                 final int opcode,
                 final String owner,
@@ -340,6 +345,7 @@ public class GroovifiedTextifier extends Textifier {
          *
          * @param l a label.
          */
+        @Override
         protected void appendLabel(final Label l) {
             if (labelNames == null) {
                 labelNames = new HashMap<Label, String>();
@@ -352,6 +358,7 @@ public class GroovifiedTextifier extends Textifier {
             this.stringBuilder.append(name);
         }
 
+        @Override
         public void visitLabel(final Label label) {
             this.stringBuilder.setLength(0);
             this.stringBuilder.append(ltab);
@@ -361,6 +368,7 @@ public class GroovifiedTextifier extends Textifier {
             text.add(this.stringBuilder.toString());
         }
 
+        @Override
         public void visitLdcInsn(final Object cst) {
             this.stringBuilder.setLength(0);
             this.stringBuilder.append(tab2).append("ldc ");
@@ -382,6 +390,7 @@ public class GroovifiedTextifier extends Textifier {
 
         }
 
+        @Override
         public void visitIincInsn(final int var, final int increment) {
             this.stringBuilder.setLength(0);
             this.stringBuilder.append(tab2)
@@ -393,6 +402,7 @@ public class GroovifiedTextifier extends Textifier {
             text.add(this.stringBuilder.toString());
         }
 
+        @Override
         public void visitTableSwitchInsn(
                 final int min,
                 final int max,
@@ -411,6 +421,7 @@ public class GroovifiedTextifier extends Textifier {
             text.add(this.stringBuilder.toString());
         }
 
+        @Override
         public void visitLookupSwitchInsn(
                 final Label dflt,
                 final int[] keys,
@@ -428,6 +439,7 @@ public class GroovifiedTextifier extends Textifier {
             text.add(this.stringBuilder.toString());
         }
 
+        @Override
         public void visitMultiANewArrayInsn(final String desc, final int dims) {
             this.stringBuilder.setLength(0);
             this.stringBuilder.append(tab2).append("multianewarray ");
@@ -442,6 +454,7 @@ public class GroovifiedTextifier extends Textifier {
             text.add(this.stringBuilder.toString());
         }
 
+        @Override
         public void visitTryCatchBlock(
                 final Label start,
                 final Label end,

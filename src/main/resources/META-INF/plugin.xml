@@ -1,11 +1,16 @@
 <idea-plugin version="2">
     <name>ASM Bytecode Viewer</name>
     <description>Displays bytecode for Java classes and ASMified code which will help you in your class generation.</description>
-    <version>0.6.0</version>
+    <version>0.7.2</version>
     <vendor>Kamiel Ahmadpour</vendor>
-    <idea-version since-build="139.1803"/>
+    <idea-version since-build="141.3058"/>
+    <depends>com.intellij.modules.java</depends>
 
     <change-notes><![CDATA[
+        <b>Version 7.2</b>
+        <ul>
+            <li>Remove incompatible versions</li>
+        </ul>
         <b>Version 7.1</b>
         <ul>
             <li>Upgraded ASM to 7.1 and fix some bugs</li>
@@ -75,7 +80,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable groupId="tools" instance="org.objectweb.asm.idea.plugin.config.PluginConfig" />
+        <applicationConfigurable groupId="tools" instance="org.objectweb.asm.idea.plugin.config.PluginConfig"/>
         <toolWindow id="ASMPlugin" anchor="right" icon="/images/asm.gif" factoryClass="org.objectweb.asm.idea.plugin.view.BytecodeOutlineToolWindowFactory"/>
         <projectService serviceInterface="org.objectweb.asm.idea.plugin.view.BytecodeOutline" serviceImplementation="org.objectweb.asm.idea.plugin.view.BytecodeOutline"/>
         <projectService serviceInterface="org.objectweb.asm.idea.plugin.view.BytecodeASMified" serviceImplementation="org.objectweb.asm.idea.plugin.view.BytecodeASMified"/>
