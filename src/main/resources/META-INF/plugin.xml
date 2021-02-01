@@ -1,4 +1,4 @@
-<idea-plugin version="2">
+<idea-plugin>
     <name>ASM Bytecode Viewer</name>
     <description>Displays bytecode for Java classes and ASMified code which will help you in your class generation.</description>
     <version>0.7.2</version>

@@ -44,7 +44,7 @@ public class ShowASMDiffAction extends AnAction {
     public ShowASMDiffAction(String previousCode, VirtualFile previousFile, Document document, String extension) {
         super("Show differences",
                 "Shows differences from the previous version of bytecode for this file",
-                IconLoader.getIcon("/actions/diffWithCurrent.png"));
+                IconLoader.getIcon("/images/diffWithCurrent.png"));
         this.previousCode = previousCode;
         this.previousFile = previousFile;
         this.document = document;

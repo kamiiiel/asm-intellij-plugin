@@ -27,9 +27,8 @@ import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompileScope;
 import com.intellij.openapi.compiler.CompilerManager;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.fileEditor.impl.text.PsiAwareTextEditorImpl;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.module.Module;
@@ -57,6 +56,7 @@ import reloc.org.objectweb.asm.util.TraceClassVisitor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.concurrent.Semaphore;
 
 
@@ -149,9 +149,22 @@ public class ShowBytecodeViewerAction extends AnAction {
             public VirtualFile compute() {
                 if (outputDirectories != null && psiFile instanceof PsiClassOwner) {
                     FileEditor editor = FileEditorManager.getInstance(psiFile.getProject()).getSelectedEditor(psiFile.getVirtualFile());
-                    int caretOffset = (editor == null) ? -1 : ((PsiAwareTextEditorImpl) editor).getEditor().getCaretModel().getOffset();
-                    if (caretOffset >= 0) {
-                        PsiElement psiElement = psiFile.findElementAt(caretOffset);
+                    Editor textEditor = null;
+                    if (editor instanceof PsiAwareTextEditorImpl) {
+                        textEditor = ((PsiAwareTextEditorImpl) editor).getEditor();
+                    } else if (editor instanceof TextEditorWithPreview) {
+                        TextEditorWithPreview editorWithPreview = (TextEditorWithPreview) editor;
+                        try {
+                            Field textEditorField = TextEditorWithPreview.class.getDeclaredField("myEditor");
+                            textEditorField.setAccessible(true);
+                            textEditor = (Editor) textEditorField.get(editorWithPreview);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (textEditor != null) {
+                        int offset = textEditor.getCaretModel().getOffset();
+                        PsiElement psiElement = psiFile.findElementAt(offset);
                         PsiClass classAtCaret = findClassAtCaret(psiElement);
                         if (classAtCaret != null) {
                             return getClassFile(classAtCaret);
