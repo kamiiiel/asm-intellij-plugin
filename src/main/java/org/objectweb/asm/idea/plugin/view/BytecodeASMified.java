@@ -18,7 +18,6 @@
 
 package org.objectweb.asm.idea.plugin.view;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -30,11 +29,11 @@ import org.objectweb.asm.idea.plugin.common.FileTypeExtension;
  */
 public class BytecodeASMified extends ACodeView {
 
-	public BytecodeASMified(final ToolWindowManager toolWindowManager, KeymapManager keymapManager, final Project project) {
-		super(toolWindowManager, keymapManager, project, FileTypeExtension.JAVA.getValue());
+	public BytecodeASMified(final Project project) {
+		super(ToolWindowManager.getInstance(project), KeymapManager.getInstance(), project, FileTypeExtension.JAVA.getValue());
 	}
 
 	public static BytecodeASMified getInstance(Project project) {
-		return ServiceManager.getService(project, BytecodeASMified.class);
+		return project.getService(BytecodeASMified.class);
 	}
 }

@@ -29,7 +29,7 @@ import javax.swing.*;
  */
 public class PluginConfig implements Configurable {
 
-    private ApplicationConfig applicationConfig;
+    private final ApplicationConfig applicationConfig;
     private ASMPluginConfiguration configDialog;
 
     public PluginConfig() {

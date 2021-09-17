@@ -76,9 +76,11 @@ public class ACodeView extends SimpleToolWindowPanel implements Disposable {
 
         final ActionManager actionManager = ActionManager.getInstance();
         final ActionToolbar actionToolBar = actionManager.createActionToolbar(Constants.PLUGIN_WINDOW_NAME, group, true);
+        actionToolBar.setTargetComponent(editorComponent);
+
         final JPanel buttonsPanel = new JPanel(new BorderLayout());
         buttonsPanel.add(actionToolBar.getComponent(), BorderLayout.CENTER);
-        PopupHandler.installPopupHandler(editor.getContentComponent(), group, Constants.PLUGIN_WINDOW_NAME, actionManager);
+        PopupHandler.installPopupMenu(editor.getContentComponent(), group, Constants.PLUGIN_WINDOW_NAME);
         setToolbar(buttonsPanel);
     }
 

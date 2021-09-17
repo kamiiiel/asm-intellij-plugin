@@ -18,7 +18,6 @@
 
 package org.objectweb.asm.idea.plugin.view;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -30,11 +29,11 @@ import org.objectweb.asm.idea.plugin.common.FileTypeExtension;
  */
 public class BytecodeOutline extends ACodeView {
 
-	public BytecodeOutline(final Project project, KeymapManager keymapManager, final ToolWindowManager toolWindowManager) {
-		super(toolWindowManager, keymapManager, project, FileTypeExtension.JAVA.getValue());
+	public BytecodeOutline(final Project project) {
+		super(ToolWindowManager.getInstance(project), KeymapManager.getInstance(), project, FileTypeExtension.JAVA.getValue());
 	}
 
 	public static BytecodeOutline getInstance(Project project) {
-		return ServiceManager.getService(project, BytecodeOutline.class);
+		return  project.getService(BytecodeOutline.class);
 	}
 }

@@ -18,7 +18,6 @@
 
 package org.objectweb.asm.idea.plugin.view;
 
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -29,11 +28,11 @@ import org.objectweb.asm.idea.plugin.common.FileTypeExtension;
  */
 public class GroovifiedView extends ACodeView {
 
-	public GroovifiedView(final Project project, KeymapManager keymapManager, final ToolWindowManager toolWindowManager) {
-		super(toolWindowManager, keymapManager, project, FileTypeExtension.GROOVY.getValue());
+	public GroovifiedView(final Project project) {
+		super(ToolWindowManager.getInstance(project), KeymapManager.getInstance(), project, FileTypeExtension.GROOVY.getValue());
 	}
 
 	public static GroovifiedView getInstance(Project project) {
-		return ServiceManager.getService(project, GroovifiedView.class);
+		return project.getService(GroovifiedView.class);
 	}
 }

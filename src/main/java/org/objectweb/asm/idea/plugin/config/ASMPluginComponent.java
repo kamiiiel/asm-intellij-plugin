@@ -42,7 +42,7 @@ import org.objectweb.asm.idea.plugin.common.Constants;
 )
 public class ASMPluginComponent implements PersistentStateComponent<Element> {
 
-    private static ApplicationConfig applicationConfig = new ApplicationConfig();
+    private static final ApplicationConfig applicationConfig = new ApplicationConfig();
 
     @Override
     public Element getState() {

@@ -27,7 +27,7 @@ import org.objectweb.asm.idea.plugin.config.PluginConfig;
 public class ShowASMSettingsAction extends AnAction {
 
     public ShowASMSettingsAction() {
-        super("Settings", "Show settings for ASM plugin", IconLoader.getIcon("/general/projectSettings.png"));
+        super("Settings", "Show settings for ASM plugin", IconLoader.getIcon("/general/projectSettings.png", ShowASMSettingsAction.class));
     }
 
     @Override

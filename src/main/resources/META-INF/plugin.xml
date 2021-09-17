@@ -1,12 +1,18 @@
 <idea-plugin version="2">
     <name>ASM Bytecode Viewer</name>
     <description>Displays bytecode for Java classes and ASMified code which will help you in your class generation.</description>
-    <version>0.7.2</version>
+    <version>9.2</version>
     <vendor>Kamiel Ahmadpour</vendor>
-    <idea-version since-build="141.3058"/>
-    <depends>com.intellij.modules.java</depends>
+    <idea-version since-build="212.4746.92"/>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
 
     <change-notes><![CDATA[
+        <b>Version 9.2</b>
+        <ul>
+            <li>Update ASM version to 9.2</li>
+            <li>Update deprecated APIs</li>
+        </ul>
         <b>Version 7.2</b>
         <ul>
             <li>Remove incompatible versions</li>

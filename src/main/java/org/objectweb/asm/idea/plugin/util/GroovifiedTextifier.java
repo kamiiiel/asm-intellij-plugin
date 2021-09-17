@@ -280,11 +280,13 @@ public class GroovifiedTextifier extends Textifier {
 
         }
 
+        @Override
         public void visitMethodInsn(
                 final int opcode,
                 final String owner,
                 final String name,
-                final String desc) {
+                final String desc,
+                final boolean isInterface) {
             this.stringBuilder.setLength(0);
             this.stringBuilder.append(tab2).append(OPCODES[opcode].toLowerCase()).append(' ');
             if (isLegacy()) {
@@ -348,13 +350,9 @@ public class GroovifiedTextifier extends Textifier {
         @Override
         protected void appendLabel(final Label l) {
             if (labelNames == null) {
-                labelNames = new HashMap<Label, String>();
+                labelNames = new HashMap<>();
             }
-            String name = (String) labelNames.get(l);
-            if (name == null) {
-                name = "l" + labelNames.size();
-                labelNames.put(l, name);
-            }
+            String name = labelNames.computeIfAbsent(l, label -> "l" + labelNames.size());
             this.stringBuilder.append(name);
         }
 
