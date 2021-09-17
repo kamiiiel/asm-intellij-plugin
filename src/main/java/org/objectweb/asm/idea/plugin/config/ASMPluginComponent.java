@@ -37,7 +37,7 @@ import org.objectweb.asm.idea.plugin.common.Constants;
 @State(
         name = Constants.COMPONENT_NAME,
         storages = {
-                @Storage(file = "$PROJECT_FILE$")
+                @Storage(value = "$PROJECT_FILE$")
         }
 )
 public class ASMPluginComponent implements PersistentStateComponent<Element> {
@@ -64,13 +64,13 @@ public class ASMPluginComponent implements PersistentStateComponent<Element> {
         Element asmNode = state.getChild("asm");
         if (asmNode != null) {
             final String skipDebugStr = asmNode.getAttributeValue("skipDebug");
-            if (skipDebugStr != null) applicationConfig.setSkipDebug(Boolean.valueOf(skipDebugStr));
+            if (skipDebugStr != null) applicationConfig.setSkipDebug(Boolean.parseBoolean(skipDebugStr));
             final String skipFramesStr = asmNode.getAttributeValue("skipFrames");
-            if (skipFramesStr != null) applicationConfig.setSkipFrames(Boolean.valueOf(skipFramesStr));
+            if (skipFramesStr != null) applicationConfig.setSkipFrames(Boolean.parseBoolean(skipFramesStr));
             final String skipCodeStr = asmNode.getAttributeValue("skipCode");
-            if (skipCodeStr != null) applicationConfig.setSkipCode(Boolean.valueOf(skipCodeStr));
+            if (skipCodeStr != null) applicationConfig.setSkipCode(Boolean.parseBoolean(skipCodeStr));
             final String expandFramesStr = asmNode.getAttributeValue("expandFrames");
-            if (expandFramesStr != null) applicationConfig.setExpandFrames(Boolean.valueOf(expandFramesStr));
+            if (expandFramesStr != null) applicationConfig.setExpandFrames(Boolean.parseBoolean(expandFramesStr));
         }
         Element groovyNode = state.getChild("groovy");
         if (groovyNode != null) {
