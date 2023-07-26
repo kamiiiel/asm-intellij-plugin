@@ -1,13 +1,19 @@
 <idea-plugin version="2">
     <name>ASM Bytecode Viewer</name>
     <description>Displays bytecode for Java classes and ASMified code which will help you in your class generation.</description>
-    <version>9.2</version>
+    <version>9.5</version>
     <vendor>Kamiel Ahmadpour</vendor>
-    <idea-version since-build="212.4746.92"/>
+    <idea-version since-build="232.8660.185"/>
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
 
     <change-notes><![CDATA[
+        <b>Version 9.5</b>
+        <ul>
+            <li>Update ASM version to 9.5</li>
+            <li>Update deprecated APIs</li>
+            <li>Fix the issue with plugin icon</li>
+        </ul>
         <b>Version 9.2</b>
         <ul>
             <li>Update ASM version to 9.2</li>
@@ -87,7 +93,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable groupId="tools" instance="org.objectweb.asm.idea.plugin.config.PluginConfig"/>
-        <toolWindow id="ASMPlugin" anchor="right" icon="/images/asm.gif" factoryClass="org.objectweb.asm.idea.plugin.view.BytecodeOutlineToolWindowFactory"/>
+        <toolWindow id="ASMPlugin" anchor="right" icon="/images/asm.svg" factoryClass="org.objectweb.asm.idea.plugin.view.BytecodeOutlineToolWindowFactory"/>
         <projectService serviceInterface="org.objectweb.asm.idea.plugin.view.BytecodeOutline" serviceImplementation="org.objectweb.asm.idea.plugin.view.BytecodeOutline"/>
         <projectService serviceInterface="org.objectweb.asm.idea.plugin.view.BytecodeASMified" serviceImplementation="org.objectweb.asm.idea.plugin.view.BytecodeASMified"/>
         <projectService serviceInterface="org.objectweb.asm.idea.plugin.view.GroovifiedView" serviceImplementation="org.objectweb.asm.idea.plugin.view.GroovifiedView"/>
