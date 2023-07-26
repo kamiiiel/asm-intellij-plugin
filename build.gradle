@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.objectweb.asm.idea.action'
-version '9.2' // Plugin version
+version '9.5' // Plugin version
 
 sourceCompatibility='1.8'
 
