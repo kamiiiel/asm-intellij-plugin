@@ -1,19 +1,29 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'java'
-    id "org.jetbrains.intellij" version "1.15.0"
+    id "org.jetbrains.intellij" version "1.16.1"
 }
 
 group 'org.objectweb.asm.idea.action'
-version '9.5' // Plugin version
+version '10' // Plugin version
 
-sourceCompatibility='1.8'
+var asm_version = '9.5'
+
+sourceCompatibility='17'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-    implementation fileTree(dir: 'lib', include: ['*.jar'])
+    implementation "org.ow2.asm:asm:${asm_version}"
+    implementation "org.ow2.asm:asm-commons:${asm_version}"
+    implementation "org.ow2.asm:asm-util:${asm_version}"
+}
+
+shadowJar {
+    relocate('org.objectweb', 'reloc.org.objectweb')
 }
 
 tasks.withType(JavaCompile) {
@@ -22,10 +32,81 @@ tasks.withType(JavaCompile) {
 
 intellij {
     pluginName = 'ASM Bytecode Viewer'
-    version = '2023.2' // IntelliJ IDEA dependency
+    version = "IC-233.11799.300"
     downloadSources = false
     updateSinceUntilBuild = false
-//    localPath = '/opt/idea-IC/'
     sandboxDir = '.sandbox'
     plugins = ['com.intellij.java']
+}
+
+
+var ideaSince = 233
+var ideaUntil = 233
+// this is the list of the IDES we want to support
+// IIC - IntelliJ Community
+// IIU - IntelliJ Ultimate
+var supportPlatforms = ["IIC", "IIU"]
+
+patchPluginXml {
+    version = project.version
+    sinceBuild = "${ideaSince}"
+    untilBuild = "${ideaUntil}.*"
+//    changeNotes = file('changeNotes.txt').text
+//    pluginDescription = file('description.txt').text
+}
+
+publishPlugin {
+    token = "${System.env.JETBRAINS_TOKEN}"
+}
+
+/**
+ * Process the current versions of the IDEs and find the versions we want to verify.
+ */
+def findVersion = () -> {
+    def parser = new groovy.json.JsonSlurper()
+    def json = parser.parseText(new URI("https://data.services.jetbrains.com/products?code=" + supportPlatforms.join('%2C')
+            + "&fields=code%2Cname%2Creleases.version%2Creleases.build%2Creleases.type").toURL().text)
+
+    def releases = []
+
+    json.each { item ->
+        def rels = [:]
+        item.releases.each { rel ->
+            if (rel.type == "release") {
+                def parts = rel.build.split("\\.")
+                def major = parts[0] as int
+
+                if (major >= ideaSince && major <= ideaUntil) {
+                    def existing = rels[major]
+                    if (existing == null) {
+                        rels[major] = rel
+                    } else {
+                        def extParts = existing.build.split("\\.")
+                        if (extParts[1] == parts[1]) {
+                            if (extParts[2] < parts[2]) {
+                                rels[major] = rel
+                            }
+                        } else if (extParts[1] < parts[1]) {
+                            rels[major] = rel
+                        }
+                    }
+                }
+            }
+        }
+        rels.values().each { rel ->
+            releases.add(item.code + "-" + rel.build)
+        }
+    }
+
+    releases
+}
+
+tasks.register('findVersion') {
+    new File(projectDir, "version.json").text = findVersion()
+}
+
+// https://github.com/JetBrains/gradle-intellij-plugin#plugin-verifier-dsl
+runPluginVerifier {
+    // Example config:
+    ideVersions = [verifyVersion]
 }

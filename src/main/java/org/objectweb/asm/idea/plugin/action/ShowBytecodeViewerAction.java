@@ -50,9 +50,9 @@ import org.objectweb.asm.idea.plugin.util.GroovifiedTextifier;
 import org.objectweb.asm.idea.plugin.view.BytecodeASMified;
 import org.objectweb.asm.idea.plugin.view.BytecodeOutline;
 import org.objectweb.asm.idea.plugin.view.GroovifiedView;
-import reloc.org.objectweb.asm.ClassReader;
-import reloc.org.objectweb.asm.util.ASMifier;
-import reloc.org.objectweb.asm.util.TraceClassVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.util.ASMifier;
+import org.objectweb.asm.util.TraceClassVisitor;
 
 import java.io.IOException;
 import java.io.PrintWriter;

@@ -1,5 +1,5 @@
 out
-.idea
 .gradle
 .sandbox
 build
+version.json

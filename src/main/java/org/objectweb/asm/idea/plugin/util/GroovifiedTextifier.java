@@ -26,12 +26,12 @@ package org.objectweb.asm.idea.plugin.util;
  */
 
 import org.objectweb.asm.idea.plugin.config.GroovyCodeStyle;
-import reloc.org.objectweb.asm.Label;
-import reloc.org.objectweb.asm.Opcodes;
-import reloc.org.objectweb.asm.Type;
-import reloc.org.objectweb.asm.commons.Method;
-import reloc.org.objectweb.asm.util.Printer;
-import reloc.org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
+import org.objectweb.asm.commons.Method;
+import org.objectweb.asm.util.Printer;
+import org.objectweb.asm.util.Textifier;
 
 import java.util.Collections;
 import java.util.HashMap;
