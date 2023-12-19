@@ -23,6 +23,7 @@ dependencies {
 }
 
 shadowJar {
+    archiveClassifier = null
     relocate('org.objectweb', 'reloc.org.objectweb')
 }
 
@@ -38,6 +39,9 @@ intellij {
     sandboxDir = '.sandbox'
     plugins = ['com.intellij.java']
 }
+
+jar.enabled = false
+jar.dependsOn shadowJar
 
 
 var ideaSince = 233
