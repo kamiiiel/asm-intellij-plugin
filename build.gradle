@@ -1,12 +1,12 @@
 plugins {
     id 'java'
-    id "org.jetbrains.intellij" version "1.15.0"
+    id "org.jetbrains.intellij" version "1.17.2"
 }
 
 group 'org.objectweb.asm.idea.action'
-version '9.5' // Plugin version
+version '9.6' // Plugin version
 
-sourceCompatibility='1.8'
+sourceCompatibility='17'
 
 repositories {
     mavenCentral()
@@ -22,7 +22,7 @@ tasks.withType(JavaCompile) {
 
 intellij {
     pluginName = 'ASM Bytecode Viewer'
-    version = '2023.2' // IntelliJ IDEA dependency
+    version = '2023.3.4' // IntelliJ IDEA dependency
     downloadSources = false
     updateSinceUntilBuild = false
 //    localPath = '/opt/idea-IC/'
