@@ -22,14 +22,16 @@ import com.intellij.diff.DiffContentFactory;
 import com.intellij.diff.DiffManager;
 import com.intellij.diff.contents.DocumentContent;
 import com.intellij.diff.requests.SimpleDiffRequest;
+import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileTypes.FileTypeManager;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiFileFactory;
+import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.idea.plugin.common.Constants;
 
 public class ShowASMDiffAction extends AnAction {
@@ -44,7 +46,7 @@ public class ShowASMDiffAction extends AnAction {
     public ShowASMDiffAction(String previousCode, VirtualFile previousFile, Document document, String extension) {
         super("Show Differences",
                 "Shows differences from the previous version of bytecode for this file",
-                IconLoader.getIcon("/actions/diffWithCurrent.png", ShowASMDiffAction.class));
+                AllIcons.Actions.Diff);
         this.previousCode = previousCode;
         this.previousFile = previousFile;
         this.document = document;
@@ -70,7 +72,10 @@ public class ShowASMDiffAction extends AnAction {
         DiffManager.getInstance().showDiff(e.getProject(), request);
     }
 
-
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 
 
     // Property files

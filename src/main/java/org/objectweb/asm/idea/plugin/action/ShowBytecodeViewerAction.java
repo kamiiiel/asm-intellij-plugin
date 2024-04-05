@@ -19,10 +19,7 @@
 package org.objectweb.asm.idea.plugin.action;
 
 import com.intellij.ide.util.JavaAnonymousClassesHelper;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.openapi.actionSystem.Presentation;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.compiler.CompileScope;
@@ -42,6 +39,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.idea.plugin.common.Constants;
 import org.objectweb.asm.idea.plugin.common.FileTypeExtension;
 import org.objectweb.asm.idea.plugin.config.ASMPluginComponent;
@@ -58,7 +56,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.concurrent.Semaphore;
-
 
 /**
  * Given a java file (or any file which generates classes), tries to locate a .class file. If the compilation state is
@@ -90,7 +87,6 @@ public class ShowBytecodeViewerAction extends AnAction {
         if (project == null || virtualFile == null) return;
         final PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
         if (psiFile instanceof PsiClassOwner) {
-            final Module module = ModuleUtil.findModuleForPsiElement(psiFile);
             if ("class".equals(virtualFile.getExtension())) {
                 updateToolWindowContents(project, virtualFile);
             } else if (!virtualFile.isInLocalFileSystem() && !virtualFile.isWritable()) {
@@ -100,22 +96,29 @@ public class ShowBytecodeViewerAction extends AnAction {
                     updateToolWindowContents(project, psiClasses[0].getOriginalElement().getContainingFile().getVirtualFile());
                 }
             } else {
-                final Application application = ApplicationManager.getApplication();
+                Module module = ModuleUtil.findModuleForPsiElement(psiFile);
+                if(module == null) {
+                    return;
+                }
+                Application application = ApplicationManager.getApplication();
                 application.runWriteAction(() -> FileDocumentManager.getInstance().saveAllDocuments());
                 application.executeOnPooledThread(() -> {
                     final CompilerModuleExtension cme = CompilerModuleExtension.getInstance(module);
+                    if(cme == null) {
+                        return;
+                    }
                     final CompilerManager compilerManager = CompilerManager.getInstance(project);
                     final VirtualFile[] files = {virtualFile};
                     final CompileScope compileScope = compilerManager.createFilesCompileScope(files);
                     final VirtualFile[] result = {null};
-                    final VirtualFile[] outputDirectories = cme == null ? null : cme.getOutputRoots(true);
+                    final VirtualFile[] outputDirectories = cme.getOutputRoots(true);
                     final Semaphore semaphore = new Semaphore(1);
                     try {
                         semaphore.acquire();
                     } catch (InterruptedException e1) {
                         result[0] = null;
                     }
-                    if (outputDirectories != null && compilerManager.isUpToDate(compileScope)) {
+                    if (compilerManager.isUpToDate(compileScope)) {
                         application.invokeLater(() -> {
                             result[0] = findClassFile(outputDirectories, psiFile);
                             semaphore.release();
@@ -123,10 +126,7 @@ public class ShowBytecodeViewerAction extends AnAction {
                     } else {
                         application.invokeLater(() -> compilerManager.compile(files, (aborted, errors, warnings, compileContext) -> {
                             if (errors == 0) {
-                                VirtualFile[] outputDirectories1 = cme.getOutputRoots(true);
-                                if (outputDirectories1 != null) {
-                                    result[0] = findClassFile(outputDirectories1, psiFile);
-                                }
+                                result[0] = findClassFile(outputDirectories, psiFile);
                             }
                             semaphore.release();
                         }));
@@ -177,19 +177,24 @@ public class ShowBytecodeViewerAction extends AnAction {
                             className = parentClass.getQualifiedName() + JavaAnonymousClassesHelper.getName((PsiAnonymousClass) psiClass);
                         }
                     } else {
-                        className = PsiTreeUtil.getParentOfType(psiClass, PsiClass.class).getQualifiedName();
+                        PsiClass parentOfType = PsiTreeUtil.getParentOfType(psiClass, PsiClass.class);
+                        if (parentOfType != null) {
+                            className = parentOfType.getQualifiedName();
+                        }
                     }
                 }
-                StringBuilder sb = new StringBuilder(className);
-                while (psiClass.getContainingClass() != null) {
-                    sb.setCharAt(sb.lastIndexOf("."), '$');
-                    psiClass = psiClass.getContainingClass();
-                }
-                String classFileName = sb.toString().replace('.', '/') + ".class";
-                for (VirtualFile outputDirectory : outputDirectories) {
-                    final VirtualFile file = outputDirectory.findFileByRelativePath(classFileName);
-                    if (file != null && file.exists()) {
-                        return file;
+                if (className != null) {
+                    StringBuilder sb = new StringBuilder(className);
+                    while (psiClass.getContainingClass() != null) {
+                        sb.setCharAt(sb.lastIndexOf("."), '$');
+                        psiClass = psiClass.getContainingClass();
+                    }
+                    String classFileName = sb.toString().replace('.', '/') + ".class";
+                    for (VirtualFile outputDirectory : outputDirectories) {
+                        final VirtualFile file = outputDirectory.findFileByRelativePath(classFileName);
+                        if (file != null && file.exists()) {
+                            return file;
+                        }
                     }
                 }
                 return null;
@@ -261,5 +266,10 @@ public class ShowBytecodeViewerAction extends AnAction {
 
             toolWindowManager.getToolWindow(Constants.PLUGIN_WINDOW_NAME).activate(null);
         });
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

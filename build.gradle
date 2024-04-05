@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id "org.jetbrains.intellij" version "1.15.0"
+    id "org.jetbrains.intellij" version "1.17.3"
 }
 
 group 'org.objectweb.asm.idea.action'
-version '9.5' // Plugin version
+version '9.7' // Plugin version
 
 sourceCompatibility='1.8'
 
